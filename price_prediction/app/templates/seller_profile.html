@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Price Prediction | Seller Profile</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        font-family: "Inter", sans-serif;
+      }
+      .sidebar-item.active {
+        background-color: #f3f4f6;
+        border-left: 4px solid #3b82f6;
+        font-weight: 500;
+      }
+      .sidebar-item.active i {
+        color: #3b82f6;
+      }
+      .document-preview {
+        transition: all 0.3s ease;
+      }
+      .document-preview:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+    </style>
+  </head>
+  <body class="bg-gray-50">
+    <div class="min-h-screen flex">
+      <!-- Sidebar -->
+      <aside
+        class="w-64 bg-white shadow-sm fixed h-full border-r border-gray-200"
+      >
+        <div class="p-6 border-b border-gray-200">
+          <h1 class="text-xl font-bold text-gray-800 flex items-center">
+            <i class="ri-ai-generate mr-2 text-blue-600"></i>
+            <span>PricePredict AI</span>
+          </h1>
+          <p class="text-xs text-gray-500 mt-1">Seller Dashboard</p>
+        </div>
+        <nav class="mt-6">
+          <a
+            href="#"
+            class="sidebar-item active flex items-center px-6 py-3 text-gray-700"
+          >
+            <div class="w-5 h-5 flex items-center justify-center">
+              <i class="ri-user-line"></i>
+            </div>
+            <span class="ml-3">Profile</span>
+          </a>
+          <a
+            href="#"
+            class="sidebar-item flex items-center px-6 py-3 text-gray-700 hover:bg-gray-50"
+          >
+            <div class="w-5 h-5 flex items-center justify-center">
+              <i class="ri-line-chart-line"></i>
+            </div>
+            <span class="ml-3">Market Analysis</span>
+          </a>
+          <a
+            href="#"
+            class="sidebar-item flex items-center px-6 py-3 text-gray-700 hover:bg-gray-50"
+          >
+            <div class="w-5 h-5 flex items-center justify-center">
+              <i class="ri-money-dollar-circle-line"></i>
+            </div>
+            <span class="ml-3">Price Predictions</span>
+          </a>
+          <a
+            href="#"
+            class="sidebar-item flex items-center px-6 py-3 text-gray-700 hover:bg-gray-50"
+          >
+            <div class="w-5 h-5 flex items-center justify-center">
+              <i class="ri-database-2-line"></i>
+            </div>
+            <span class="ml-3">Inventory</span>
+          </a>
+          <a
+            href="#"
+            class="sidebar-item flex items-center px-6 py-3 text-gray-700 hover:bg-gray-50"
+          >
+            <div class="w-5 h-5 flex items-center justify-center">
+              <i class="ri-settings-3-line"></i>
+            </div>
+            <span class="ml-3">Settings</span>
+          </a>
+        </nav>
+
+        <div class="absolute bottom-0 w-full p-4 border-t border-gray-200">
+          <a
+            href="{% url 'logout' %}"
+            class="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-50 rounded-md"
+          >
+            <div class="w-5 h-5 flex items-center justify-center">
+              <i class="ri-logout-box-r-line text-gray-500"></i>
+            </div>
+            <span class="ml-3 text-gray-700">Logout</span>
+          </a>
+        </div>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="flex-1 ml-64">
+        <!-- Header -->
+        <header class="bg-white shadow-sm p-4 border-b border-gray-200">
+          <div class="flex justify-between items-center">
+            <h2 class="text-lg font-semibold text-gray-800">Seller Profile</h2>
+          </div>
+        </header>
+
+        {% if messages %}
+        <div
+          class="mx-8 mt-4 px-4 py-2 bg-green-500 text-white text-center rounded-md shadow-sm"
+          id="success-message"
+        >
+          {% for message in messages %}
+          <p>{{ message }}</p>
+          {% endfor %}
+        </div>
+        {% endif %}
+
+        <div class="p-8">
+          <!-- Seller Profile Section -->
+          <div
+            class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-8"
+          >
+            <div class="flex justify-between items-center mb-6">
+              <h2 class="text-xl font-semibold text-gray-800">
+                Seller Profile Details
+              </h2>
+              <a
+                href="{% url 'edit_profile' %}"
+                class="text-blue-600 hover:text-blue-800 text-sm font-medium flex items-center"
+              >
+                <i class="ri-edit-line mr-1"></i> Edit Profile
+              </a>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <!-- Left Column - Profile Picture -->
+              <div class="col-span-1 flex flex-col items-center">
+                <div class="relative mb-4">
+                  <img
+                    src="{{ user.profile_pic.url }}"
+                    alt="Profile"
+                    class="w-40 h-40 rounded-full border-4 border-white shadow-md"
+                  />
+                </div>
+                <div class="text-center">
+                  <h3 class="text-lg font-semibold text-gray-800">
+                    {{ user.username }}
+                  </h3>
+                  <p class="text-gray-600 text-sm">Seller ID: {{ user.id }}</p>
+                </div>
+              </div>
+
+              <!-- Middle Column - Personal Details -->
+              <div class="col-span-1 space-y-4">
+                <div>
+                  <h4
+                    class="text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    Contact Information
+                  </h4>
+                  <div class="mt-2 space-y-3">
+                    <div class="flex items-start">
+                      <i class="ri-mail-line text-gray-400 mt-1 mr-2"></i>
+                      <div>
+                        <p class="text-xs text-gray-500">Email Address</p>
+                        <p class="text-sm font-medium text-gray-800">
+                          {{ user.email }}
+                        </p>
+                      </div>
+                    </div>
+                    <div class="flex items-start">
+                      <i class="ri-phone-line text-gray-400 mt-1 mr-2"></i>
+                      <div>
+                        <p class="text-xs text-gray-500">Phone Number</p>
+                        <p class="text-sm font-medium text-gray-800">
+                          {{ user.phone }}
+                        </p>
+                      </div>
+                    </div>
+                    <div class="flex items-start">
+                      <i class="ri-map-pin-line text-gray-400 mt-1 mr-2"></i>
+                      <div>
+                        <p class="text-xs text-gray-500">Business Address</p>
+                        <p class="text-sm font-medium text-gray-800">
+                          {{ user.address }}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <h4
+                    class="text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    Personal Details
+                  </h4>
+                  <div class="mt-2 space-y-3">
+                    <div class="flex items-start">
+                      <i class="ri-user-3-line text-gray-400 mt-1 mr-2"></i>
+                      <div>
+                        <p class="text-xs text-gray-500">Gender</p>
+                        <p class="text-sm font-medium text-gray-800">
+                          {{ user.gender }}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div
+                class="document-preview border border-gray-200 rounded-md p-3 hover:border-blue-300 cursor-pointer"
+              >
+                <div class="flex items-center justify-between mb-2">
+                  <span class="text-sm font-medium text-gray-700"
+                    >Government ID</span
+                  >
+                  {% if user.proof_of_identity %}
+                  <a
+                    href="{{ user.proof_of_identity.url }}"
+                    target="_blank"
+                    class="text-blue-600 text-xs hover:text-blue-800"
+                    >View Full</a
+                  >
+                  {% else %}
+                  <span class="text-xs text-gray-400">Not uploaded</span>
+                  {% endif %}
+                </div>
+                {% if user.proof_of_identity %}
+                <img
+                  src="{{ user.proof_of_identity.url }}"
+                  alt="ID Proof"
+                  class="w-full h-auto rounded"
+                />
+                {% else %}
+                <img
+                  src="https://via.placeholder.com/300x150?text=No+Document"
+                  alt="ID Proof"
+                  class="w-full h-auto rounded"
+                />
+                {% endif %}
+              </div>
+            </div>
+          </div>
+
+          <!-- Recent Activity Section -->
+          <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+            <h2 class="text-xl font-semibold text-gray-800 mb-6">
+              Recent Activity
+            </h2>
+            <div class="space-y-4">
+              <div class="flex items-start pb-4 border-b border-gray-100">
+                <div class="bg-blue-100 p-2 rounded-full mr-3">
+                  <i class="ri-line-chart-line text-blue-600"></i>
+                </div>
+                <div>
+                  <p class="text-sm font-medium text-gray-800">
+                    New price prediction completed for Electronics category
+                  </p>
+                  <p class="text-xs text-gray-500 mt-1">
+                    Predicted optimal price: $249.99 (Market avg: $229.99)
+                  </p>
+                  <p class="text-xs text-gray-400 mt-1">2 hours ago</p>
+                </div>
+              </div>
+              <div class="flex items-start pb-4 border-b border-gray-100">
+                <div class="bg-green-100 p-2 rounded-full mr-3">
+                  <i class="ri-check-line text-green-600"></i>
+                </div>
+                <div>
+                  <p class="text-sm font-medium text-gray-800">
+                    Prediction verified as accurate
+                  </p>
+                  <p class="text-xs text-gray-500 mt-1">
+                    +5 reputation points added to your profile
+                  </p>
+                  <p class="text-xs text-gray-400 mt-1">5 hours ago</p>
+                </div>
+              </div>
+              <div class="flex items-start">
+                <div class="bg-purple-100 p-2 rounded-full mr-3">
+                  <i class="ri-money-dollar-circle-line text-purple-600"></i>
+                </div>
+                <div>
+                  <p class="text-sm font-medium text-gray-800">
+                    New sale completed through your prediction
+                  </p>
+                  <p class="text-xs text-gray-500 mt-1">
+                    $245.00 profit generated (12.5% commission)
+                  </p>
+                  <p class="text-xs text-gray-400 mt-1">1 day ago</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>

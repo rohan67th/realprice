@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Real Estate Marketplace</title>
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: { primary: "#3b82f6", secondary: "#10b981" },
+            borderRadius: {
+              none: "0px",
+              sm: "4px",
+              DEFAULT: "8px",
+              md: "12px",
+              lg: "16px",
+              xl: "20px",
+              "2xl": "24px",
+              "3xl": "32px",
+              full: "9999px",
+              button: "8px",
+            },
+          },
+        },
+      };
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css"
+      rel="stylesheet"
+    />
+    <style>
+      :where([class^="ri-"])::before { content: "\f3c2"; }
+      body {
+          font-family: 'Inter', sans-serif;
+      }
+      .hero-section {
+          background-image: url('https://public.readdy.ai/ai/img_res/d9ae13be84c37d9dc463a04734556638.jpg');
+          background-size: cover;
+          background-position: center;
+      }
+      input:focus {
+          outline: none;
+      }
+      input[type="number"]::-webkit-inner-spin-button,
+      input[type="number"]::-webkit-outer-spin-button {
+          -webkit-appearance: none;
+          margin: 0;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-50">
+    <!-- Header -->
+    <header class="fixed top-0 left-0 right-0 bg-white shadow-sm z-50">
+      <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+        <a href="#" class="text-3xl text-primary">AI Price Prediction</a>
+    
+        <!-- Desktop Navigation -->
+        <nav class="hidden md:flex items-center space-x-8">
+          <a href="/" class="text-gray-900 font-medium hover:text-primary transition-colors">Home</a>
+          <a href="{% url 'about' %}" class="text-gray-600 hover:text-primary transition-colors">About Us</a>
+          <a href="{% url 'contact' %}" class="text-gray-600 hover:text-primary transition-colors">Contact Us</a>
+          <a href="#" class="text-gray-600 hover:text-primary transition-colors">Sell</a>
+          
+          <!-- Login Dropdown -->
+          <div class="relative group">
+            <button class="bg-primary text-white px-6 py-2 !rounded-button hover:bg-primary/90 transition-colors whitespace-nowrap flex items-center">
+              Login
+              <i class="ri-arrow-down-s-line ml-2"></i>
+            </button>
+            
+            <div class="absolute right-0 mt-2 w-48 bg-white rounded-button shadow-lg z-50 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+              <a href="{% url 'admin_login' %}" class="block px-4 py-3 text-gray-800 hover:bg-gray-100 transition-colors first:rounded-t-button last:rounded-b-button">
+                <div class="flex items-center">
+                  <i class="ri-admin-line mr-2"></i>
+                  Admin login
+                </div>
+              </a>
+              <a href="{% url 'buyer_login' %}" class="block px-4 py-3 text-gray-800 hover:bg-gray-100 transition-colors">
+                <div class="flex items-center">
+                  <i class="ri-user-line mr-2"></i>
+                  Buyer login
+                </div>
+              </a>
+              <a href="{% url 'login' %}" class="block px-4 py-3 text-gray-800 hover:bg-gray-100 transition-colors">
+                <div class="flex items-center">
+                  <i class="ri-store-line mr-2"></i>
+                  Seller login
+                </div>
+              </a>
+            </div>
+          </div>
+        </nav>
+    
+        <!-- Mobile Navigation Toggle -->
+        <div class="md:hidden w-10 h-10 flex items-center justify-center">
+          <i class="ri-menu-line ri-lg text-gray-700"></i>
+        </div>
+      </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero-section pt-24 md:pt-32 pb-16 md:pb-24">
+      <div class="container mx-auto px-4 w-full">
+        <div
+          class="max-w-2xl bg-white/90 backdrop-blur-sm p-8 md:p-12 !rounded-xl"
+        >
+          <h1
+            class="text-4xl md:text-5xl font-bold text-gray-900 leading-tight mb-4"
+          >
+            Find Your Dream Home Today
+          </h1>
+          <p class="text-lg md:text-xl text-gray-700 mb-8">
+            Discover thousands of properties that match your preferences and
+            budget. Your perfect home is just a click away.
+          </p>
+
+          
+
+          <div class="flex flex-col sm:flex-row gap-4">
+            <button
+              class="bg-primary text-white px-8 py-3 !rounded-button hover:bg-primary/90 transition-colors flex-1 whitespace-nowrap"
+            >
+              Explore Properties
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+
+    <!-- Why Choose Us -->
+    <section class="py-16 bg-gray-50">
+      <div class="container mx-auto px-4">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl font-bold text-gray-900 mb-4">Why Choose Us</h2>
+          <p class="text-gray-600 max-w-2xl mx-auto">
+            We're committed to providing exceptional service and making your
+            property journey seamless and rewarding.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <!-- Feature 1 -->
+          <div class="bg-white p-6 !rounded-xl shadow-md text-center">
+            <div
+              class="w-16 h-16 bg-primary/10 !rounded-full flex items-center justify-center mx-auto mb-4"
+            >
+              <i class="ri-search-line ri-xl text-primary"></i>
+            </div>
+            <h3 class="text-xl font-semibold text-gray-900 mb-2">
+              Extensive Selection
+            </h3>
+            <p class="text-gray-600">
+              Access thousands of listings across all property types and price
+              ranges.
+            </p>
+          </div>
+
+          <!-- Feature 2 -->
+          <div class="bg-white p-6 !rounded-xl shadow-md text-center">
+            <div
+              class="w-16 h-16 bg-primary/10 !rounded-full flex items-center justify-center mx-auto mb-4"
+            >
+              <i class="ri-shield-check-line ri-xl text-primary"></i>
+            </div>
+            <h3 class="text-xl font-semibold text-gray-900 mb-2">
+              Verified Listings
+            </h3>
+            <p class="text-gray-600">
+              Every property is thoroughly vetted to ensure accuracy and
+              quality.
+            </p>
+          </div>
+
+          <!-- Feature 3 -->
+          <div class="bg-white p-6 !rounded-xl shadow-md text-center">
+            <div
+              class="w-16 h-16 bg-primary/10 !rounded-full flex items-center justify-center mx-auto mb-4"
+            >
+              <i class="ri-team-line ri-xl text-primary"></i>
+            </div>
+            <h3 class="text-xl font-semibold text-gray-900 mb-2">
+              Expert Agents
+            </h3>
+            <p class="text-gray-600">
+              Our experienced professionals provide personalized guidance and
+              support.
+            </p>
+          </div>
+
+          <!-- Feature 4 -->
+          <div class="bg-white p-6 !rounded-xl shadow-md text-center">
+            <div
+              class="w-16 h-16 bg-primary/10 !rounded-full flex items-center justify-center mx-auto mb-4"
+            >
+              <i class="ri-hand-coin-line ri-xl text-primary"></i>
+            </div>
+            <h3 class="text-xl font-semibold text-gray-900 mb-2">
+              Transparent Pricing
+            </h3>
+            <p class="text-gray-600">
+              No hidden fees or surprises – just clear, upfront pricing
+              information.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Statistics -->
+    <section class="py-16 bg-primary/5">
+      <div class="container mx-auto px-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <!-- Stat 1 -->
+          <div class="text-center">
+            <div class="text-4xl font-bold text-primary mb-2">15,000+</div>
+            <p class="text-gray-700">Active Listings</p>
+          </div>
+
+          <!-- Stat 2 -->
+          <div class="text-center">
+            <div class="text-4xl font-bold text-primary mb-2">98%</div>
+            <p class="text-gray-700">Client Satisfaction</p>
+          </div>
+
+          <!-- Stat 3 -->
+          <div class="text-center">
+            <div class="text-4xl font-bold text-primary mb-2">45,000+</div>
+            <p class="text-gray-700">Happy Homeowners</p>
+          </div>
+
+          <!-- Stat 4 -->
+          <div class="text-center">
+            <div class="text-4xl font-bold text-primary mb-2">500+</div>
+            <p class="text-gray-700">Expert Agents</p>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white pt-16 pb-8">
+      <div class="container mx-auto px-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+          
+          <!-- About Us -->
+          <div>
+            <h3 class="text-xl font-semibold mb-4">About Us</h3>
+            <p class="text-gray-400 mb-4">
+              We are committed to connecting people with their dream properties while delivering exceptional service and expertise throughout the journey.
+            </p>
+            <div class="flex space-x-4">
+              <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                <i class="ri-facebook-fill text-2xl"></i>
+              </a>
+              <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                <i class="ri-twitter-x-fill text-2xl"></i>
+              </a>
+              <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                <i class="ri-instagram-fill text-2xl"></i>
+              </a>
+              <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                <i class="ri-linkedin-fill text-2xl"></i>
+              </a>
+            </div>
+          </div>
+    
+          <!-- Contact Us -->
+          <div>
+            <h3 class="text-xl font-semibold mb-4">Contact Us</h3>
+            <ul class="space-y-3 text-gray-400 text-sm">
+              <li class="flex items-start">
+                <i class="ri-map-pin-line mr-3 mt-1 text-lg"></i>
+                <span>1234 Property Lane, Suite 500<br />New York, NY 10001</span>
+              </li>
+              <li class="flex items-center">
+                <i class="ri-phone-line mr-3 text-lg"></i>
+                <span>(555) 123-4567</span>
+              </li>
+              <li class="flex items-center">
+                <i class="ri-mail-line mr-3 text-lg"></i>
+                <span>info@realestate.com</span>
+              </li>
+            </ul>
+          </div>
+    
+          <!-- Terms of Service -->
+          <div>
+            <h3 class="text-xl font-semibold mb-4">Terms of Service</h3>
+            <p class="text-gray-400 text-sm mb-2">
+              Please review our terms and conditions to understand your rights and obligations when using our services.
+            </p>
+            <a href="#" class="text-blue-400 hover:text-white text-sm transition-colors">Read Terms of Service</a>
+          </div>
+    
+          <!-- Privacy Policy -->
+          <div>
+            <h3 class="text-xl font-semibold mb-4">Privacy Policy</h3>
+            <p class="text-gray-400 text-sm mb-2">
+              We value your privacy. Learn how we collect, use, and protect your information in our privacy policy.
+            </p>
+            <a href="#" class="text-blue-400 hover:text-white text-sm transition-colors">Read Privacy Policy</a>
+          </div>
+        </div>
+    
+        <div class="border-t border-gray-800 pt-8">
+          <div class="flex flex-col md:flex-row justify-between items-center text-sm text-gray-500">
+            <a href="#" class="text-2xl text-white mb-4 md:mb-0">AI Powered Price Prediction</a>
+            <div class="flex space-x-4 mb-4 md:mb-0">
+              <a href="#" class="hover:text-white">About Us</a>
+              <a href="#" class="hover:text-white">Contact Us</a>
+              <a href="#" class="hover:text-white">Terms of Service</a>
+              <a href="#" class="hover:text-white">Privacy Policy</a>
+            </div>
+            <div>&copy; 2025 Real Estate Marketplace. All rights reserved.</div>
+          </div>
+        </div>
+      </div>
+    </footer>
+    
+
+    <script>
+      // Mobile menu toggle
+      document.addEventListener("DOMContentLoaded", function () {
+        const mobileMenuToggle = document.querySelector(".md\\:hidden");
+
+        if (mobileMenuToggle) {
+          mobileMenuToggle.addEventListener("click", function () {
+            // Mobile menu functionality would go here
+            alert("Mobile menu clicked - would expand navigation options");
+          });
+        }
+      });
+    </script>
+  </body>
+</html>

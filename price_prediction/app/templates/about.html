@@ -1,0 +1,385 @@
+{% extends "base.html" %}
+
+{% block title %}About - PriceSage AI{% endblock %}
+
+{% block head_extra %}
+  <!-- Any additional styles/scripts specific to this page -->
+  <style>
+    :where([class^="ri-"])::before { content: "\f3c2"; }
+    body {
+        font-family: 'Inter', sans-serif;
+        color: #1f2937;
+    }
+    .gradient-text {
+        background: linear-gradient(90deg, #3b82f6, #60a5fa);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+    }
+  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" />
+{% endblock %}
+
+{% block content %}
+
+<body class="bg-gray-50">
+
+
+    <!-- Hero Section -->
+    <section class="relative overflow-hidden">
+      <div
+        style="background-image: url('https://public.readdy.ai/ai/img_res/9b0887c6b0f1a048a8a4446dc4effa4f.jpg'); background-size: cover; background-position: center;"
+        class="w-full h-[500px]"
+      >
+        <div
+          class="absolute inset-0 bg-gradient-to-r from-white via-white/90 to-transparent"
+        ></div>
+        <div
+          class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex items-center"
+        >
+          <div class="max-w-2xl">
+            <h1
+              class="text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl mb-6"
+            >
+              About Our <span class="gradient-text">AI-Powered</span><br />Price
+              Prediction Platform
+            </h1>
+            <p class="text-lg text-gray-600 mb-8">
+              Leveraging advanced machine learning algorithms to deliver
+              accurate price forecasts across multiple markets, helping you make
+              data-driven decisions with confidence.
+            </p>
+            <div class="flex space-x-4">
+              <a
+                href="{% url 'register' %}"
+                class="bg-primary text-white px-6 py-3 rounded-button text-base font-medium hover:bg-blue-600 transition-colors duration-300 flex items-center whitespace-nowrap"
+              >
+                <span>Try It Free</span>
+                <div class="w-5 h-5 ml-2 flex items-center justify-center">
+                  <i class="ri-arrow-right-line"></i>
+                </div>
+              </a>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Key Stats -->
+    <section class="py-12 bg-white">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+          <div class="text-center p-6 bg-blue-50 rounded-lg">
+            <div class="text-primary text-3xl font-bold mb-2">94.7%</div>
+            <p class="text-gray-600">Prediction Accuracy</p>
+          </div>
+          <div class="text-center p-6 bg-blue-50 rounded-lg">
+            <div class="text-primary text-3xl font-bold mb-2">12M+</div>
+            <p class="text-gray-600">Data Points Analyzed</p>
+          </div>
+          <div class="text-center p-6 bg-blue-50 rounded-lg">
+            <div class="text-primary text-3xl font-bold mb-2">8</div>
+            <p class="text-gray-600">Market Sectors Covered</p>
+          </div>
+          <div class="text-center p-6 bg-blue-50 rounded-lg">
+            <div class="text-primary text-3xl font-bold mb-2">35K+</div>
+            <p class="text-gray-600">Active Users</p>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- Technology Overview -->
+    <section class="py-16 bg-gray-50">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+          <h2 class="text-3xl font-bold text-gray-900">Our Technology</h2>
+          <p class="mt-4 text-lg text-gray-600 max-w-3xl mx-auto">
+            Powered by cutting-edge machine learning algorithms and vast
+            datasets, our platform delivers accurate price predictions across
+            multiple markets.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div class="bg-white p-8 rounded-lg shadow-sm">
+            <div
+              class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mb-6"
+            >
+              <i class="ri-database-2-line text-primary text-xl"></i>
+            </div>
+            <h3 class="text-xl font-semibold mb-4">Data Collection</h3>
+            <p class="text-gray-600">
+              Our system continuously collects and processes data from over 200
+              sources, including market trends, historical prices, economic
+              indicators, and social sentiment.
+            </p>
+          </div>
+
+          <div class="bg-white p-8 rounded-lg shadow-sm">
+            <div
+              class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mb-6"
+            >
+              <i class="ri-ai-generate text-primary text-xl"></i>
+            </div>
+            <h3 class="text-xl font-semibold mb-4">AI Processing</h3>
+            <p class="text-gray-600">
+              Our proprietary neural networks and ensemble models analyze
+              patterns and correlations that human analysts might miss,
+              constantly learning from new data.
+            </p>
+          </div>
+
+          <div class="bg-white p-8 rounded-lg shadow-sm">
+            <div
+              class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mb-6"
+            >
+              <i class="ri-line-chart-line text-primary text-xl"></i>
+            </div>
+            <h3 class="text-xl font-semibold mb-4">Prediction Engine</h3>
+            <p class="text-gray-600">
+              Advanced algorithms generate accurate price forecasts with
+              confidence intervals, allowing you to make informed decisions with
+              statistical backing.
+            </p>
+          </div>
+        </div>
+
+        <div class="mt-16 bg-white p-8 rounded-lg shadow-sm">
+          <h3 class="text-2xl font-semibold mb-8 text-center">
+            How Our AI Prediction Works
+          </h3>
+          <div class="relative">
+            <div class="h-2 bg-gray-200 rounded-full mx-8 mb-12"></div>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 relative">
+              <div class="text-center">
+                <div
+                  class="w-12 h-12 bg-primary rounded-full flex items-center justify-center mx-auto -mt-14 mb-4 relative z-10"
+                >
+                  <span class="text-white font-bold">1</span>
+                </div>
+                <h4 class="font-semibold mb-2">Data Ingestion</h4>
+                <p class="text-sm text-gray-600">
+                  Collecting diverse data from multiple sources
+                </p>
+              </div>
+              <div class="text-center">
+                <div
+                  class="w-12 h-12 bg-primary rounded-full flex items-center justify-center mx-auto -mt-14 mb-4 relative z-10"
+                >
+                  <span class="text-white font-bold">2</span>
+                </div>
+                <h4 class="font-semibold mb-2">Data Processing</h4>
+                <p class="text-sm text-gray-600">
+                  Cleaning and normalizing data for analysis
+                </p>
+              </div>
+              <div class="text-center">
+                <div
+                  class="w-12 h-12 bg-primary rounded-full flex items-center justify-center mx-auto -mt-14 mb-4 relative z-10"
+                >
+                  <span class="text-white font-bold">3</span>
+                </div>
+                <h4 class="font-semibold mb-2">Model Training</h4>
+                <p class="text-sm text-gray-600">
+                  AI models learn from historical patterns
+                </p>
+              </div>
+              <div class="text-center">
+                <div
+                  class="w-12 h-12 bg-primary rounded-full flex items-center justify-center mx-auto -mt-14 mb-4 relative z-10"
+                >
+                  <span class="text-white font-bold">4</span>
+                </div>
+                <h4 class="font-semibold mb-2">Price Prediction</h4>
+                <p class="text-sm text-gray-600">
+                  Generating accurate forecasts with confidence scores
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Benefits Section -->
+    <section class="py-16 bg-white">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+          <h2 class="text-3xl font-bold text-gray-900">
+            Why Choose Our Platform
+          </h2>
+          <p class="mt-4 text-lg text-gray-600 max-w-3xl mx-auto">
+            Our AI-powered price prediction platform offers unique advantages
+            that help businesses and individuals make better financial
+            decisions.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+          <div class="flex">
+            <div class="flex-shrink-0">
+              <div
+                class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center"
+              >
+                <i class="ri-timer-line text-primary text-xl"></i>
+              </div>
+            </div>
+            <div class="ml-6">
+              <h3 class="text-xl font-semibold mb-2">Real-Time Predictions</h3>
+              <p class="text-gray-600">
+                Get instant price forecasts that update as market conditions
+                change, allowing you to make timely decisions based on the
+                latest data.
+              </p>
+            </div>
+          </div>
+
+          <div class="flex">
+            <div class="flex-shrink-0">
+              <div
+                class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center"
+              >
+                <i class="ri-bar-chart-grouped-line text-primary text-xl"></i>
+              </div>
+            </div>
+            <div class="ml-6">
+              <h3 class="text-xl font-semibold mb-2">Multi-Market Analysis</h3>
+              <p class="text-gray-600">
+                Our platform covers stocks, commodities, real estate, and more,
+                giving you a comprehensive view across different asset classes.
+              </p>
+            </div>
+          </div>
+
+          <div class="flex">
+            <div class="flex-shrink-0">
+              <div
+                class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center"
+              >
+                <i class="ri-shield-check-line text-primary text-xl"></i>
+              </div>
+            </div>
+            <div class="ml-6">
+              <h3 class="text-xl font-semibold mb-2">Risk Assessment</h3>
+              <p class="text-gray-600">
+                Each prediction comes with confidence intervals and risk
+                metrics, helping you understand the potential variability in
+                forecasted prices.
+              </p>
+            </div>
+          </div>
+
+          <div class="flex">
+            <div class="flex-shrink-0">
+              <div
+                class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center"
+              >
+                <i class="ri-user-settings-line text-primary text-xl"></i>
+              </div>
+            </div>
+            <div class="ml-6">
+              <h3 class="text-xl font-semibold mb-2">Customizable Alerts</h3>
+              <p class="text-gray-600">
+                Set up personalized notifications for price thresholds, trend
+                changes, and prediction updates tailored to your specific
+                interests.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Company Section -->
+    <section class="py-16 bg-gray-50">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+          <div>
+            <h2 class="text-3xl font-bold text-gray-900 mb-6">Our Mission</h2>
+            <p class="text-lg text-gray-600 mb-6">
+              We're on a mission to democratize access to advanced price
+              prediction technology, enabling everyone from individual investors
+              to large enterprises to make more informed financial decisions.
+            </p>
+            <p class="text-lg text-gray-600 mb-8">
+              Founded in 2022 by a team of data scientists and financial
+              experts, we've grown to serve over 35,000 users worldwide, with a
+              commitment to continuous improvement and innovation.
+            </p>
+            <div class="flex space-x-6">
+              <div class="flex items-center">
+                <div
+                  class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center"
+                >
+                  <i class="ri-medal-line text-primary"></i>
+                </div>
+                <span class="ml-2 text-gray-700">ISO 27001 Certified</span>
+              </div>
+              <div class="flex items-center">
+                <div
+                  class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center"
+                >
+                  <i class="ri-shield-star-line text-primary"></i>
+                </div>
+                <span class="ml-2 text-gray-700">GDPR Compliant</span>
+              </div>
+            </div>
+          </div>
+          <div>
+            <img
+              src="https://public.readdy.ai/ai/img_res/d57e1b56e3847bb59f96a0ef467928d4.jpg"
+              alt="Our team"
+              class="rounded-lg shadow-md w-full object-cover object-top"
+            />
+          </div>
+        </div>
+
+        <div class="mt-20">
+          <h3 class="text-2xl font-semibold text-center mb-12">
+            Trusted By Industry Leaders
+          </h3>
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+            <div class="flex flex-col items-center">
+              <div
+                class="w-16 h-16 flex items-center justify-center text-gray-400"
+              >
+                <i class="ri-microsoft-fill ri-3x"></i>
+              </div>
+              <span class="mt-2 text-gray-600 font-medium">Microsoft</span>
+            </div>
+            <div class="flex flex-col items-center">
+              <div
+                class="w-16 h-16 flex items-center justify-center text-gray-400"
+              >
+                <i class="ri-amazon-fill ri-3x"></i>
+              </div>
+              <span class="mt-2 text-gray-600 font-medium">Amazon</span>
+            </div>
+            <div class="flex flex-col items-center">
+              <div
+                class="w-16 h-16 flex items-center justify-center text-gray-400"
+              >
+                <i class="ri-netflix-fill ri-3x"></i>
+              </div>
+              <span class="mt-2 text-gray-600 font-medium">Netflix</span>
+            </div>
+            <div class="flex flex-col items-center">
+              <div
+                class="w-16 h-16 flex items-center justify-center text-gray-400"
+              >
+                <i class="ri-google-fill ri-3x"></i>
+              </div>
+              <span class="mt-2 text-gray-600 font-medium">Google</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+      
+  </body>
+</section>
+{% endblock %}

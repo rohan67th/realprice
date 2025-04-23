@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Faculty Registration | Academic Portal</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        @media (min-width: 768px) {
+            .form-container {
+                width: 700px;
+                max-width: 90%;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center p-4">
+
+<div class="form-container mx-auto">
+    <div class="bg-white shadow-xl rounded-lg overflow-hidden">
+        <!-- Header -->
+        <div class="bg-blue-600 py-5 px-8 text-center">
+            <h1 class="text-2xl font-bold text-white">
+                <i class="fas fa-chalkboard-teacher mr-2"></i> Buyer Registration
+            </h1>
+            <p class="text-blue-100 mt-1 text-sm">Please fill in all required fields</p>
+        </div>
+
+        <!-- Form Container -->
+        <div class="p-8">
+            {% if messages %}
+                <div class="mb-6 space-y-2">
+                    {% for message in messages %}
+                        <div class="flex items-start p-3 rounded-md {% if message.tags == 'error' %}bg-red-50 text-red-700{% else %}bg-green-50 text-green-700{% endif %}">
+                            <i class="fas {% if message.tags == 'error' %}fa-exclamation-circle{% else %}fa-check-circle{% endif %} mt-1 mr-2"></i>
+                            <span>{{ message }}</span>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <form method="POST" enctype="multipart/form-data" class="space-y-5">
+                {% csrf_token %}
+                
+                <!-- Name and Email Row -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Name -->
+                    <div>
+                        <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Full Name <span class="text-red-500">*</span></label>
+                        <div class="relative">
+                            <input type="text" name="name" id="name" 
+                                class="block w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" 
+                                placeholder="John Doe" required>
+                            <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                                <i class="fas fa-user text-gray-400"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Email -->
+                    <div>
+                        <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email <span class="text-red-500">*</span></label>
+                        <div class="relative">
+                            <input type="email" name="email" id="email" 
+                                class="block w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" 
+                                placeholder="john@university.edu" required>
+                            <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                                <i class="fas fa-envelope text-gray-400"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Phone and Gender Row -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Phone -->
+                    <div>
+                        <label for="phone" class="block text-sm font-medium text-gray-700 mb-1">Phone <span class="text-red-500">*</span></label>
+                        <div class="relative">
+                            <input type="tel" name="phone" id="phone" 
+                                class="block w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" 
+                                placeholder="+1 (555) 123-4567" required>
+                            <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                                <i class="fas fa-phone text-gray-400"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Gender -->
+                    <div>
+                        <label for="gender" class="block text-sm font-medium text-gray-700 mb-1">Gender <span class="text-red-500">*</span></label>
+                        <div class="relative">
+                            <select name="gender" id="gender" 
+                                class="block w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition appearance-none" required>
+                                <option value="" disabled selected>Select your gender</option>
+                                <option value="M">Male</option>
+                                <option value="F">Female</option>
+                                <option value="O">Other</option>
+                            </select>
+                            <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                                <i class="fas fa-chevron-down text-gray-400"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Address -->
+                <div>
+                    <label for="address" class="block text-sm font-medium text-gray-700 mb-1">Address <span class="text-red-500">*</span></label>
+                    <textarea name="address" id="address" rows="3" 
+                        class="block w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" 
+                        placeholder="123 University Ave, City, State" required></textarea>
+                </div>
+
+                <!-- Profile Picture -->
+                <div>
+                    <label for="profile_pic" class="block text-sm font-medium text-gray-700 mb-1">Profile Picture</label>
+                    <div class="flex items-center space-x-6">
+                        <div class="shrink-0">
+                            <img id="profile-pic-preview" class="h-20 w-20 object-cover rounded-full border-2 border-gray-200" 
+                                src="https://www.gravatar.com/avatar/?d=mp" alt="Profile preview">
+                        </div>
+                        <div class="w-full">
+                            <div class="relative">
+                                <input type="file" name="profile_pic" id="profile_pic" accept="image/*" 
+                                    class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 transition">
+                            </div>
+                            <p class="mt-1 text-xs text-gray-500">JPG, PNG or GIF (Max 2MB)</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Passwords Row -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Password -->
+                    <div>
+                        <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Password <span class="text-red-500">*</span></label>
+                        <div class="relative">
+                            <input type="password" name="password" id="password" 
+                                class="block w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" 
+                                placeholder="••••••••" required>
+                            <div class="absolute inset-y-0 right-0 flex items-center pr-3">
+                                <i id="toggle-password" class="fas fa-eye text-gray-400 cursor-pointer hover:text-blue-600"></i>
+                            </div>
+                        </div>
+                        <div class="mt-1 text-xs text-gray-500">
+                            <p>Must be at least 8 characters with one number and one special character</p>
+                        </div>
+                    </div>
+
+                    <!-- Confirm Password -->
+                    <div>
+                        <label for="confirm_password" class="block text-sm font-medium text-gray-700 mb-1">Confirm Password <span class="text-red-500">*</span></label>
+                        <div class="relative">
+                            <input type="password" name="confirm_password" id="confirm_password" 
+                                class="block w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" 
+                                placeholder="••••••••" required>
+                            <div class="absolute inset-y-0 right-0 flex items-center pr-3">
+                                <i id="toggle-confirm-password" class="fas fa-eye text-gray-400 cursor-pointer hover:text-blue-600"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- Submit Button -->
+                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 px-4 rounded-md font-medium shadow-md hover:shadow-lg transition duration-200 flex items-center justify-center mt-6">
+                    <i class="fas fa-user-plus mr-2"></i> Register Now
+                </button>
+            </form>
+
+            <!-- Login Link -->
+            <div class="mt-6 pt-6 border-t border-gray-200 text-center">
+                <p class="text-sm text-gray-600">
+                    Already have an account? 
+                    <a href="{% url 'buyer_login' %}" class="font-medium text-blue-600 hover:text-blue-500 hover:underline">
+                        Sign in here
+                    </a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript -->
+<script>
+    // Profile picture preview
+    document.getElementById('profile_pic').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                document.getElementById('profile-pic-preview').src = event.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    // Toggle password visibility
+    document.getElementById('toggle-password').addEventListener('click', function() {
+        const passwordInput = document.getElementById('password');
+        const icon = this;
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            icon.classList.replace('fa-eye', 'fa-eye-slash');
+        } else {
+            passwordInput.type = 'password';
+            icon.classList.replace('fa-eye-slash', 'fa-eye');
+        }
+    });
+
+    // Toggle confirm password visibility
+    document.getElementById('toggle-confirm-password').addEventListener('click', function() {
+        const confirmPasswordInput = document.getElementById('confirm_password');
+        const icon = this;
+        if (confirmPasswordInput.type === 'password') {
+            confirmPasswordInput.type = 'text';
+            icon.classList.replace('fa-eye', 'fa-eye-slash');
+        } else {
+            confirmPasswordInput.type = 'password';
+            icon.classList.replace('fa-eye-slash', 'fa-eye');
+        }
+    });
+</script>
+
+</body>
+</html>

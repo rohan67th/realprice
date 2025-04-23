@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Buyer Profile | Real Estate Platform</title>
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css"
+      rel="stylesheet"
+    />
+    <style>
+      :where([class^="ri-"])::before {
+        content: "\f3c2";
+      }
+      body {
+        font-family: "Inter", sans-serif;
+      }
+      .sidebar-item:hover {
+        background-color: rgba(59, 130, 246, 0.05);
+        transition: all 0.3s ease;
+      }
+      .sidebar-item.active {
+        background-color: rgba(59, 130, 246, 0.1);
+        border-left: 3px solid #3b82f6;
+      }
+      .profile-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+          0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s ease;
+      }
+      input[type="range"]::-webkit-slider-thumb {
+        appearance: none;
+        width: 20px;
+        height: 20px;
+        background-color: #3b82f6;
+        border-radius: 50%;
+        cursor: pointer;
+      }
+      .custom-checkbox {
+        position: relative;
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        margin-right: 8px;
+      }
+      .custom-checkbox input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+      }
+      .checkmark {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 20px;
+        height: 20px;
+        background-color: #fff;
+        border: 2px solid #d1d5db;
+        border-radius: 4px;
+      }
+      .custom-checkbox input:checked ~ .checkmark {
+        background-color: #3b82f6;
+        border-color: #3b82f6;
+      }
+      .checkmark:after {
+        content: "";
+        position: absolute;
+        display: none;
+      }
+      .custom-checkbox input:checked ~ .checkmark:after {
+        display: block;
+        left: 6px;
+        top: 2px;
+        width: 6px;
+        height: 12px;
+        border: solid white;
+        border-width: 0 2px 2px 0;
+        transform: rotate(45deg);
+      }
+      .custom-switch {
+        position: relative;
+        display: inline-block;
+        width: 44px;
+        height: 24px;
+      }
+      .custom-switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+      }
+      .switch-slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #e5e7eb;
+        transition: 0.4s;
+        border-radius: 24px;
+      }
+      .switch-slider:before {
+        position: absolute;
+        content: "";
+        height: 18px;
+        width: 18px;
+        left: 3px;
+        bottom: 3px;
+        background-color: white;
+        transition: 0.4s;
+        border-radius: 50%;
+      }
+      input:checked + .switch-slider {
+        background-color: #3b82f6;
+      }
+      input:checked + .switch-slider:before {
+        transform: translateX(20px);
+      }
+    </style>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: { primary: "#3b82f6", secondary: "#64748b" },
+            borderRadius: {
+              none: "0px",
+              sm: "4px",
+              DEFAULT: "8px",
+              md: "12px",
+              lg: "16px",
+              xl: "20px",
+              "2xl": "24px",
+              "3xl": "32px",
+              full: "9999px",
+              button: "8px",
+            },
+          },
+        },
+      };
+    </script>
+  </head>
+  <body class="bg-gray-50 min-h-screen">
+    <div class="flex">
+      <!-- Sidebar -->
+      <div class="w-64 bg-white h-screen fixed shadow-md flex flex-col">
+        <!-- Logo and User Profile -->
+        <div class="p-6 border-b border-gray-100">
+          <div class="flex items-center mb-4">
+            <div class="w-12 h-12 rounded-full bg-gray-200 overflow-hidden">
+              <img
+                src="https://readdy.ai/api/search-image?query=professional%20portrait%20photo%20of%20a%20young%20real%20estate%20buyer%2C%2030s%2C%20business%20casual%20attire%2C%20neutral%20expression%2C%20high%20quality%2C%20professional%20headshot&width=200&height=200&seq=1234&orientation=squarish"
+                alt="Profile"
+                class="w-full h-full object-cover"
+              />
+            </div>
+            <div class="ml-3">
+              <h3 class="font-semibold text-gray-800 font-['Pacifico'] text-2xl">Hey, {{ buyer.name }}</h3>
+            </div>
+          </div>
+        </div>
+        <!-- Navigation Menu -->
+        <nav class="flex-1 overflow-y-auto py-4">
+          <div
+            class="px-4 mb-2 text-xs font-semibold text-gray-400 uppercase tracking-wider"
+          >
+            Main Menu
+          </div>
+          <a
+            href="#"
+            class="sidebar-item flex items-center px-6 py-3 text-gray-700"
+          >
+            <div
+              class="w-6 h-6 flex items-center justify-center mr-3 text-gray-500"
+            >
+            <i class="ri-user-line"></i>
+            </div>
+            <span>Profile</span>
+          </a>
+          <a
+            href="#"
+            class="sidebar-item flex items-center px-6 py-3 text-gray-700"
+          >
+            <div
+              class="w-6 h-6 flex items-center justify-center mr-3 text-gray-500"
+            >
+              <i class="ri-message-3-line"></i>
+            </div>
+            <span>Chat</span>
+          </a>
+          <a
+            href="#"
+            class="sidebar-item flex items-center px-6 py-3 text-gray-700"
+          >
+            <div
+              class="w-6 h-6 flex items-center justify-center mr-3 text-gray-500"
+            >
+              <i class="ri-heart-line"></i>
+            </div>
+            <span>Interested Properties</span>
+          </a>
+          <a
+            href="#"
+            class="sidebar-item flex items-center px-6 py-3 text-gray-700"
+          >
+            <div
+              class="w-6 h-6 flex items-center justify-center mr-3 text-gray-500"
+            >
+              <i class="ri-calendar-line"></i>
+            </div>
+            <span>Scheduled Visits</span>
+          </a>
+          <a
+            href="#"
+            class="sidebar-item flex items-center px-6 py-3 text-gray-700"
+          >
+            <div
+              class="w-6 h-6 flex items-center justify-center mr-3 text-gray-500"
+            >
+              <i class="ri-check-line"></i>
+            </div>
+            <span>Confirmed Properties</span>
+          </a>
+    
+        </nav>
+        <!-- Logout Button -->
+        <div class="p-4 border-t border-gray-100">
+          <a
+            href="{% url 'seller_logout' %}"
+            class="sidebar-item flex items-center px-6 py-3 text-gray-700 hover:text-red-500"
+          >
+            <div
+              class="w-6 h-6 flex items-center justify-center mr-3 text-gray-500"
+            >
+              <i class="ri-logout-box-line"></i>
+            </div>
+            <span>Logout</span>
+          </a>
+        </div>
+      </div>
+      <!-- Main Content -->
+      <div class="ml-64 flex-1 p-8">
+        {% if messages %}
+                <div class="mb-6 space-y-2">
+                    {% for message in messages %}
+                        <div class="flex items-start p-3 rounded-md {% if message.tags == 'error' %}bg-red-50 text-red-700{% else %}bg-green-50 text-green-700{% endif %}">
+                            <i class="fas {% if message.tags == 'error' %}fa-exclamation-circle{% else %}fa-check-circle{% endif %} mt-1 mr-2"></i>
+                            <span>{{ message }}</span>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        <div class="max-w-5xl mx-auto">
+          <!-- Header -->
+          <div class="mb-8">
+            <h1 class="text-3xl font-bold text-gray-800">My Profile</h1>
+            <p class="text-gray-600 mt-2">
+              Manage your personal information and preferences
+            </p>
+          </div>
+          <!-- Profile Content -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Personal Information Card -->
+            <div
+              class="profile-card bg-white p-6 rounded shadow-sm transition-all duration-300"
+            >
+              <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-semibold text-gray-800">
+                  Personal Information
+                </h2>
+                <button
+                  class="text-primary hover:text-primary-dark !rounded-button whitespace-nowrap"
+                >
+                  <div class="w-8 h-8 flex items-center justify-center">
+                    <i class="ri-edit-line"></i>
+                  </div>
+                </button>
+              </div>
+              <div class="space-y-4">
+                <div>
+                  <h3 class="text-sm font-medium text-gray-500">Username</h3>
+                  <p class="text-base text-gray-800 mt-1">{{ buyer.name }}</p>
+                </div>
+                <div>
+                  <h3 class="text-sm font-medium text-gray-500">
+                    Email Address
+                  </h3>
+                  <p class="text-base text-gray-800 mt-1">
+                    {{ buyer.email }}
+                  </p>
+                </div>
+                <div>
+                  <h3 class="text-sm font-medium text-gray-500">
+                    Phone Number
+                  </h3>
+                  <p class="text-base text-gray-800 mt-1">{{ buyer.phone }}</p>
+                </div>
+                <div>
+                  <h3 class="text-sm font-medium text-gray-500">Address</h3>
+                  <p class="text-base text-gray-800 mt-1">{{ buyer.address }}</p>
+                </div>
+
+                <div>
+                    <h3 class="text-sm font-medium text-gray-500">Gender</h3>
+                    <p class="text-base text-gray-800 mt-1">{{ buyer.gender }}</p>
+                  </div>
+              </div>
+            </div>
+            <!-- Activity Summary Card -->
+            <div
+              class="profile-card bg-white p-6 rounded shadow-sm transition-all duration-300"
+            >
+              <h2 class="text-xl font-semibold text-gray-800 mb-4">
+                Activity Summary
+              </h2>
+              <div class="grid grid-cols-2 gap-4">
+                <div class="bg-blue-50 p-4 rounded">
+                  <div class="flex items-center justify-between">
+                    <span class="text-gray-600 text-sm">Properties Viewed</span>
+                    <div
+                      class="w-8 h-8 flex items-center justify-center text-primary bg-white rounded-full shadow-sm"
+                    >
+                      <i class="ri-eye-line"></i>
+                    </div>
+                  </div>
+                  <p class="text-2xl font-bold text-gray-800 mt-2">47</p>
+                </div>
+                <div class="bg-blue-50 p-4 rounded">
+                  <div class="flex items-center justify-between">
+                    <span class="text-gray-600 text-sm">Saved Properties</span>
+                    <div
+                      class="w-8 h-8 flex items-center justify-center text-primary bg-white rounded-full shadow-sm"
+                    >
+                      <i class="ri-heart-line"></i>
+                    </div>
+                  </div>
+                  <p class="text-2xl font-bold text-gray-800 mt-2">12</p>
+                </div>
+                <div class="bg-blue-50 p-4 rounded">
+                  <div class="flex items-center justify-between">
+                    <span class="text-gray-600 text-sm">Scheduled Visits</span>
+                    <div
+                      class="w-8 h-8 flex items-center justify-center text-primary bg-white rounded-full shadow-sm"
+                    >
+                      <i class="ri-calendar-line"></i>
+                    </div>
+                  </div>
+                  <p class="text-2xl font-bold text-gray-800 mt-2">5</p>
+                </div>
+                <div class="bg-blue-50 p-4 rounded">
+                  <div class="flex items-center justify-between">
+                    <span class="text-gray-600 text-sm">Agent Chats</span>
+                    <div
+                      class="w-8 h-8 flex items-center justify-center text-primary bg-white rounded-full shadow-sm"
+                    >
+                      <i class="ri-message-3-line"></i>
+                    </div>
+                  </div>
+                  <p class="text-2xl font-bold text-gray-800 mt-2">8</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // Sidebar active state
+        const sidebarItems = document.querySelectorAll(".sidebar-item");
+        sidebarItems.forEach((item) => {
+          item.addEventListener("click", function () {
+            sidebarItems.forEach((i) => i.classList.remove("active"));
+            this.classList.add("active");
+          });
+        });
+      });
+    </script>
+  </body>
+</html>

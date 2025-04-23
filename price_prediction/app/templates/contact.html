@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block title %}Contact Us | Real Estate Marketplace{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div class="text-center mb-16">
+        <h1 class="text-4xl font-bold text-gray-900 mb-4">Get in Touch</h1>
+        <p class="text-lg text-gray-600">We'd love to hear from you. Here's how you can reach us.</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div class="bg-white p-8 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300">
+            <div class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-6">
+                <i class="ri-phone-line text-primary text-2xl"></i>
+            </div>
+            <h3 class="text-xl font-semibold text-gray-900 mb-2">Phone</h3>
+            <p class="text-gray-600 mb-4">Mon-Fri from 8am to 5pm EST</p>
+            <a href="tel:+1-202-555-0123" class="text-primary hover:text-primary/80 font-medium cursor-pointer">+1 (202) 555-0123</a>
+        </div>
+
+        <div class="bg-white p-8 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300">
+            <div class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-6">
+                <i class="ri-mail-line text-primary text-2xl"></i>
+            </div>
+            <h3 class="text-xl font-semibold text-gray-900 mb-2">Email</h3>
+            <p class="text-gray-600 mb-4">We'll respond within 24 hours</p>
+            <a href="mailto:support@company.com" class="text-primary hover:text-primary/80 font-medium cursor-pointer">support@company.com</a>
+        </div>
+
+        <div class="bg-white p-8 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300">
+            <div class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-6">
+                <i class="ri-map-pin-line text-primary text-2xl"></i>
+            </div>
+            <h3 class="text-xl font-semibold text-gray-900 mb-2">Office</h3>
+            <p class="text-gray-600 mb-4">Come visit us</p>
+            <p class="text-gray-800">ABC Company LTD</p>
+        </div>
+    </div>
+</div>
+{% endblock %}
