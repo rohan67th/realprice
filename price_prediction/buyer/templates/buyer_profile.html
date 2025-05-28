@@ -166,7 +166,11 @@
               />
             </div>
             <div class="ml-3">
-              <h3 class="font-semibold text-gray-800 font-['Pacifico'] text-2xl">Hey, {{ buyer.name }}</h3>
+              <h3
+                class="font-semibold text-gray-800 font-['Pacifico'] text-2xl"
+              >
+                Hey, {{ buyer.name }}
+              </h3>
             </div>
           </div>
         </div>
@@ -184,7 +188,7 @@
             <div
               class="w-6 h-6 flex items-center justify-center mr-3 text-gray-500"
             >
-            <i class="ri-user-line"></i>
+              <i class="ri-user-line"></i>
             </div>
             <span>Profile</span>
           </a>
@@ -232,7 +236,6 @@
             </div>
             <span>Confirmed Properties</span>
           </a>
-    
         </nav>
         <!-- Logout Button -->
         <div class="p-4 border-t border-gray-100">
@@ -252,15 +255,19 @@
       <!-- Main Content -->
       <div class="ml-64 flex-1 p-8">
         {% if messages %}
-                <div class="mb-6 space-y-2">
-                    {% for message in messages %}
-                        <div class="flex items-start p-3 rounded-md {% if message.tags == 'error' %}bg-red-50 text-red-700{% else %}bg-green-50 text-green-700{% endif %}">
-                            <i class="fas {% if message.tags == 'error' %}fa-exclamation-circle{% else %}fa-check-circle{% endif %} mt-1 mr-2"></i>
-                            <span>{{ message }}</span>
-                        </div>
-                    {% endfor %}
-                </div>
-            {% endif %}
+        <div class="mb-6 space-y-2">
+          {% for message in messages %}
+          <div
+            class="flex items-start p-3 rounded-md {% if message.tags == 'error' %}bg-red-50 text-red-700{% else %}bg-green-50 text-green-700{% endif %}"
+          >
+            <i
+              class="fas {% if message.tags == 'error' %}fa-exclamation-circle{% else %}fa-check-circle{% endif %} mt-1 mr-2"
+            ></i>
+            <span>{{ message }}</span>
+          </div>
+          {% endfor %}
+        </div>
+        {% endif %}
         <div class="max-w-5xl mx-auto">
           <!-- Header -->
           <div class="mb-8">
@@ -282,9 +289,12 @@
                 <button
                   class="text-primary hover:text-primary-dark !rounded-button whitespace-nowrap"
                 >
-                  <div class="w-8 h-8 flex items-center justify-center">
+                  <a
+                    href="{% url 'edit_profile_buyer' %}"
+                    class="w-8 h-8 flex items-center justify-center"
+                  >
                     <i class="ri-edit-line"></i>
-                  </div>
+                  </a>
                 </button>
               </div>
               <div class="space-y-4">
@@ -296,9 +306,7 @@
                   <h3 class="text-sm font-medium text-gray-500">
                     Email Address
                   </h3>
-                  <p class="text-base text-gray-800 mt-1">
-                    {{ buyer.email }}
-                  </p>
+                  <p class="text-base text-gray-800 mt-1">{{ buyer.email }}</p>
                 </div>
                 <div>
                   <h3 class="text-sm font-medium text-gray-500">
@@ -308,13 +316,15 @@
                 </div>
                 <div>
                   <h3 class="text-sm font-medium text-gray-500">Address</h3>
-                  <p class="text-base text-gray-800 mt-1">{{ buyer.address }}</p>
+                  <p class="text-base text-gray-800 mt-1">
+                    {{ buyer.address }}
+                  </p>
                 </div>
 
                 <div>
-                    <h3 class="text-sm font-medium text-gray-500">Gender</h3>
-                    <p class="text-base text-gray-800 mt-1">{{ buyer.gender }}</p>
-                  </div>
+                  <h3 class="text-sm font-medium text-gray-500">Gender</h3>
+                  <p class="text-base text-gray-800 mt-1">{{ buyer.gender }}</p>
+                </div>
               </div>
             </div>
             <!-- Activity Summary Card -->

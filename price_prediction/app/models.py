@@ -65,4 +65,24 @@ class PasswordReset(models.Model):
         return f"Password reset for {self.user.username} at {self.created_when}"
     
 
+class Property(models.Model):
+    PROPERTY_TYPES = [
+        ('House', 'House'),
+        ('Apartment', 'Apartment'),
+        ('Commercial', 'Commercial'),
+        ('Land', 'Land'),
+    ]
+    property_type = models.CharField(max_length=50, choices=PROPERTY_TYPES)
+    address = models.TextField()
+    location = models.CharField(max_length=100)
+    features = models.CharField(max_length=200, blank=True)
+    description = models.TextField(blank=True)
+    photos = models.ImageField(upload_to='property_photos/', blank=True, null=True)
 
+    price = models.DecimalField(max_digits=12, decimal_places=2) 
+    seller = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+
+    is_approved = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"{self.property_type} at {self.location}"

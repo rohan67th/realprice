@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.hashers import make_password, check_password
+import uuid
 
 GENDER_CHOICES = [
     ('M', 'Male'),
@@ -43,3 +44,12 @@ class Buyer(models.Model):
 
     def __str__(self):
         return self.email
+
+
+class PasswordResetBuyer(models.Model):
+    user = models.ForeignKey(Buyer, on_delete=models.CASCADE)
+    reset_id = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
+    created_when = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Password reset for {self.user.username} at {self.created_when}"

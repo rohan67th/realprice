@@ -1,10 +1,14 @@
 from django.shortcuts import render, redirect,get_object_or_404
 from django.contrib import messages
-from .models import Buyer
+from .models import Buyer,PasswordResetBuyer
 from django.contrib.auth.hashers import make_password
 from django.core.exceptions import ValidationError
 from django.urls import reverse
 from django.contrib.auth import logout
+from django.core.mail import EmailMessage
+from django.conf import settings
+from django.http import HttpResponseRedirect
+
 
 def buyer_registration(request):
     if request.method == "POST":
@@ -86,24 +90,124 @@ def seller_logout(request):
 
 
 
-def edit_profile(request):
-    user = Buyer.objects.get(email=request.user.email)
+def edit_profile_buyer(request):
+
+    buyer = request.session.get('id')
+    print(buyer)
 
     if request.method == 'POST':
-        user.name = request.POST.get('username')
-        user.email = request.POST.get('email')
-        user.phone = request.POST.get('phone')
-        user.address = request.POST.get('address')
-        user.gender = request.POST.get('gender')
+        buyer.name = request.POST.get('name')
+        buyer.email = request.POST.get('email')
+        buyer.phone = request.POST.get('phone')
+        buyer.address = request.POST.get('address')
+        buyer.gender = request.POST.get('gender')
 
         # Handle profile picture if uploaded
         if 'profile_pic' in request.FILES:
-            user.profile_pic = request.FILES['profile_pic']
+            buyer.profile_pic = request.FILES['profile_pic']
 
-        user.save()
+        buyer.save()
 
         messages.success(request, "Profile updated successfully!")
-        profile_url = reverse('seller_profile', kwargs={'user_id': user.id})
+        profile_url = reverse('buyer_profile', kwargs={'user_id': buyer.id})
         return redirect(profile_url)
 
-    return render(request, 'edit_seller.html', {'user': user})
+    return render(request, 'edit_buyer.html', {'user': buyer})
+
+
+
+
+#Forget password
+
+from django.utils import timezone
+
+def forget_password_buyer(request):
+    
+    if request.method =="POST":
+        email = request.POST.get('email')
+
+        try:
+            user = Buyer.objects.get(email=email)
+
+            new_password_reset = PasswordResetBuyer(user=user)
+            new_password_reset.save()
+
+            password_reset_url = reverse('reset-password-buyer', kwargs={'reset_id': new_password_reset.reset_id})
+
+            full_password_reset_url = f'{request.scheme}://{request.get_host()}{password_reset_url}'
+
+            email_body = f'Reset your password using the link below:\n\n\n{full_password_reset_url}'
+        
+
+            email_message = EmailMessage(
+                'Reset your password',
+                email_body,
+                settings.EMAIL_HOST_USER,
+                [email]
+            )
+
+            email_message.fail_silently = False
+            email_message.send()
+
+            return HttpResponseRedirect(reverse("password-reset-sent-buyer", kwargs={"reset_id": new_password_reset.reset_id}))
+        
+        except Buyer.DoesNotExist:
+            messages.error(request, f"No user with email '{email}' found")
+            return redirect('forgot-password-buyer')
+
+    return render(request,'forget_password_buyer.html')
+
+
+def password_reset_sent_buyer(request,reset_id):
+
+    if PasswordResetBuyer.objects.filter(reset_id=reset_id).exists():
+        return render(request, 'password_reset_sent_buyer.html')
+    else:
+        messages.error(request, 'Invalid reset id')
+        return redirect('forgot-password-buyer')
+
+
+def reset_password_buyer(request,reset_id):
+    
+    try:
+        password_reset_id = PasswordResetBuyer.objects.get(reset_id=reset_id)
+
+        if request.method == 'POST':
+            password = request.POST.get('password')
+            confirm_password = request.POST.get('confirm_password')
+
+            passwords_have_error = False
+
+            if password != confirm_password:
+                passwords_have_error = True
+                messages.error(request, 'Passwords do not match')
+            
+            expiration_time = password_reset_id.created_when + timezone.timedelta(minutes=10)
+
+            if timezone.now() > expiration_time:
+                passwords_have_error = True
+                messages.error(request, 'Reset link has expired')
+
+                password_reset_id.delete()
+
+            if not passwords_have_error:
+                user = password_reset_id.user
+                user.set_password(password)
+                user.save()
+
+                password_reset_id.delete()
+
+                messages.success(request, 'Password reset. Proceed to login')
+                return redirect('buyer_login')
+            
+            else:
+                return redirect('reset-password-buyer',reset_id=reset_id)
+
+    
+    
+    except PasswordResetBuyer.DoesNotExist:
+        
+        messages.error(request, 'Invalid reset id')
+        return redirect('forgot-password-buyer')
+
+    return render(request, 'reset_password_buyer.html',{'reset_id': reset_id})

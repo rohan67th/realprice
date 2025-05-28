@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Property Listings</title>
+<script src="https://cdn.tailwindcss.com/3.4.16"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css"
+/>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          primary: "#4f46e5",
+          secondary: "#6366f1",
+        },
+        borderRadius: {
+          none: "0px",
+          sm: "4px",
+          DEFAULT: "8px",
+          md: "12px",
+          lg: "16px",
+          xl: "20px",
+          "2xl": "24px",
+          "3xl": "32px",
+          full: "9999px",
+          button: "8px",
+        },
+        fontFamily: {
+          sans: ["Inter", "sans-serif"],
+        },
+      },
+    },
+  };
+</script>
+<style>
+  body {
+    font-family: "Inter", sans-serif;
+  }
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  .property-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  .property-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1),
+      0 8px 10px -6px rgba(0, 0, 0, 0.05);
+  }
+  .custom-select {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236b7280'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.5rem center;
+    background-size: 1.5em 1.5em;
+  }
+  button, .property-card button {
+    cursor: pointer;
+  }
+</style>
+</head>
+<body class="bg-white min-h-screen">
+  <!-- Header -->
+  <header
+    class="fixed top-0 left-0 right-0 bg-white/95 backdrop-blur-sm shadow-sm z-50"
+  >
+    <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+      <a href="#" class="text-3xl font-['Pacifico'] text-primary">logo</a>
+      <a
+        href="profile.html"
+        class="flex items-center space-x-2 text-gray-700 hover:text-primary transition-colors"
+        ><i class="ri-user-line text-xl cursor-pointer"></i>
+        <span>Profile</span></a
+      >
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="pb-12 mt-20">
+    <!-- Search Section -->
+    <section class="py-12 bg-white">
+      <div class="container mx-auto px-4">
+        <div
+          class="bg-white rounded-xl shadow-lg p-6 relative z-10 border border-gray-100"
+        >
+          <div class="grid md:grid-cols-4 gap-4">
+            <div class="relative">
+              <div
+                class="absolute inset-y-0 left-3 flex items-center pointer-events-none"
+              >
+                <i class="ri-map-pin-line text-gray-400"></i>
+              </div>
+              <input
+                type="text"
+                placeholder="Location"
+                class="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-button focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-colors"
+              />
+            </div>
+            <div class="relative">
+              <div
+                class="absolute inset-y-0 left-3 flex items-center pointer-events-none"
+              >
+                <i class="ri-home-line text-gray-400"></i>
+              </div>
+              <select
+                class="w-full pl-10 pr-8 py-3 border border-gray-200 rounded-button focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-colors appearance-none bg-white"
+              >
+                <option value="">Property Type</option>
+                <option value="house">House</option>
+                <option value="apartment">Apartment</option>
+                <option value="condo">Condo</option>
+              </select>
+            </div>
+            <div class="relative">
+              <div
+                class="absolute inset-y-0 left-3 flex items-center pointer-events-none"
+              >
+                <i class="ri-money-dollar-circle-line text-gray-400"></i>
+              </div>
+              <select
+                class="w-full pl-10 pr-8 py-3 border border-gray-200 rounded-button focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-colors appearance-none bg-white"
+              >
+                <option value="">Price Range</option>
+                <option value="0-300000">$0 - $300,000</option>
+                <option value="300000-600000">$300,000 - $600,000</option>
+                <option value="600000-1000000">$600,000 - $1,000,000</option>
+                <option value="1000000+">$1,000,000+</option>
+              </select>
+            </div>
+            <button
+              class="bg-primary text-white px-6 py-3 rounded-button hover:bg-primary/80 transition-colors whitespace-nowrap"
+            >
+              Search Properties
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Featured Properties Section -->
+    <section class="py-16 bg-gray-50">
+      <div class="container mx-auto px-4">
+        <div class="text-center max-w-2xl mx-auto mb-12">
+          <h2 class="text-3xl font-bold text-gray-900 mb-4">
+            Featured Properties
+          </h2>
+          <p class="text-gray-600">
+            Discover our hand-picked selection of premium properties that match
+            your lifestyle and preferences.
+          </p>
+        </div>
+
+        <!-- Property Grid -->
+        <div class="flex flex-col lg:flex-row items-center gap-4 mb-8">
+          <div class="relative flex-1 w-full">
+            <div
+              class="absolute inset-y-0 left-3 flex items-center pointer-events-none"
+            >
+              <i class="ri-search-line text-gray-400"></i>
+            </div>
+            <input
+              type="text"
+              placeholder="Search properties by location, type, etc."
+              class="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-button focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-colors"
+            />
+          </div>
+          <div class="flex items-center gap-3 w-full lg:w-auto">
+            <div class="relative flex-1 lg:flex-none">
+              <select
+                class="w-full lg:w-44 custom-select pr-8 py-2.5 pl-4 border border-gray-200 rounded-button bg-white focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-colors"
+              >
+                <option value="">Property Type</option>
+                <option value="apartment">Apartment</option>
+                <option value="house">House</option>
+                <option value="condo">Condo</option>
+                <option value="villa">Villa</option>
+                <option value="land">Land</option>
+              </select>
+            </div>
+            <div class="relative flex-1 lg:flex-none">
+              <select
+                class="w-full lg:w-44 custom-select pr-8 py-2.5 pl-4 border border-gray-200 rounded-button bg-white focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-colors"
+              >
+                <option value="">Price Range</option>
+                <option value="0-100000">$0 - $100,000</option>
+                <option value="100000-300000">$100,000 - $300,000</option>
+                <option value="300000-500000">$300,000 - $500,000</option>
+                <option value="500000-1000000">$500,000 - $1,000,000</option>
+                <option value="1000000+">$1,000,000+</option>
+              </select>
+            </div>
+            <div class="relative flex-1 lg:flex-none">
+              <select
+                class="w-full lg:w-44 custom-select pr-8 py-2.5 pl-4 border border-gray-200 rounded-button bg-white focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-colors"
+              >
+                <option value="newest">Newest First</option>
+                <option value="price-low">Price: Low to High</option>
+                <option value="price-high">Price: High to Low</option>
+                <option value="popular">Most Popular</option>
+              </select>
+            </div>
+            <button
+              class="bg-primary text-white px-6 py-2.5 rounded-button hover:bg-primary/80 transition-colors whitespace-nowrap flex items-center"
+            >
+              <i class="ri-filter-3-line mr-2"></i> Filter
+            </button>
+          </div>
+        </div>
+
+        <!-- Results Count -->
+        <div class="flex justify-between items-center mb-6">
+          <h2 class="text-xl font-semibold text-gray-800">Showing 24 Properties</h2>
+          <div class="flex items-center gap-2">
+            <span class="text-gray-600">View:</span>
+            <button
+              class="w-8 h-8 flex items-center justify-center bg-primary text-white rounded cursor-pointer"
+            >
+              <i class="ri-layout-grid-line"></i>
+            </button>
+            <button
+              class="w-8 h-8 flex items-center justify-center bg-gray-100 text-gray-600 rounded hover:bg-gray-200 transition-colors cursor-pointer"
+            >
+              <i class="ri-list-check"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Property Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          <!-- Property Card 1 -->
+          <div class="property-card bg-white rounded-lg overflow-hidden shadow-sm">
+            <div class="relative">
+              <img
+                src="https://readdy.ai/api/search-image?query=modern%20luxury%20apartment%20building%20with%20large%20windows%2C%20balconies%2C%20and%20contemporary%20architecture%2C%20professional%20real%20estate%20photography%2C%20bright%20daylight%2C%20clean%20exterior&width=600&height=400&seq=prop1&orientation=landscape"
+                alt="Luxury Apartment"
+                class="w-full h-48 object-cover object-top"
+              />
+              <div class="absolute top-3 left-3">
+                <span
+                  class="bg-primary text-white text-xs font-semibold px-2 py-1 rounded"
+                  >Featured</span
+                >
+              </div>
+              <div class="absolute top-3 right-3">
+                <button
+                  class="w-8 h-8 flex items-center justify-center bg-white/90 rounded-full text-gray-600 hover:text-primary transition-colors cursor-pointer"
+                >
+                  <i class="ri-heart-line"></i>
+                </button>
+              </div>
+            </div>
+            <div class="p-4">
+              <div class="flex justify-between items-start mb-2">
+                <h3 class="text-lg font-semibold text-gray-800 line-clamp-1">
+                  Riverside Luxury Apartment
+                </h3>
+                <span class="text-primary font-bold">$425,000</span>
+              </div>
+              <div class="flex items-center text-gray-500 mb-3">
+                <i class="ri-map-pin-line mr-1"></i>
+                <span class="text-sm">Manhattan, New York City</span>
+              </div>
+              <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center text-gray-600">
+                  <i class="ri-hotel-bed-line mr-1"></i>
+                  <span class="text-sm">3 Beds</span>
+                </div>
+                <div class="flex items-center text-gray-600">
+                  <i class="ri-shower-line mr-1"></i>
+                  <span class="text-sm">2 Baths</span>
+                </div>
+                <div class="flex items-center text-gray-600">
+                  <i class="ri-arrow-left-right-line mr-1"></i>
+                  <span class="text-sm">1,500 sqft</span>
+                </div>
+              </div>
+              <button
+                class="bg-primary w-full text-white py-2 rounded-button hover:bg-primary/80 transition-colors"
+              >
+                View Details
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

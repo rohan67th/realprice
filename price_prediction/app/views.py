@@ -1,12 +1,12 @@
 from django.shortcuts import render, redirect,get_object_or_404
 from django.contrib.auth import authenticate, login, logout
-from .models import CustomUser,PasswordReset
+from .models import CustomUser,PasswordReset,Property
 from django.contrib import messages
 from django.core.mail import EmailMessage
 from django.urls import reverse
 from django.conf import settings
 from django.utils import timezone
-from django.http import HttpResponseRedirect, JsonResponse,StreamingHttpResponse
+from django.http import HttpResponseRedirect
 
 
 
@@ -54,6 +54,27 @@ def toggle_block_user(request, user_id):
     user.is_blocked = not user.is_blocked
     user.save()
     return redirect('seller_list')
+
+
+def approve_property(request, property_id):
+    property_obj = get_object_or_404(Property, id=property_id)
+    property_obj.is_approved = True
+    property_obj.save()
+    messages.success(request, f'Property "{property_obj}" approved successfully.')
+    return redirect('dashboard')
+
+
+def decline_property(request, property_id):
+    property_obj = get_object_or_404(Property, id=property_id)
+    property_obj.delete()  
+    messages.success(request, f'Property "{property_obj}" declined and removed.')
+    return redirect('dashboard')
+
+
+def admin_property_list(request):
+    properties = Property.objects.filter(is_approved=True)
+    return render(request,'admin_property_list.html',{'properties': properties})
+
 
 #Seller
 
@@ -125,9 +146,88 @@ def seller_profile(request,user_id):
     user = get_object_or_404(CustomUser, id=user_id)
     return render(request, 'seller_profile.html', {'user': user})
 
+def seller_property_list(request):
+    properties = Property.objects.filter(is_approved=True)
+    return render(request,'seller_property_list.html',{'properties': properties})
+
+
+def seller_edit_property(request, id):
+    property = get_object_or_404(Property, id=id)
+    if request.method == 'POST':
+        property.title = request.POST.get('title')
+        property.location = request.POST.get('location')
+        property.property_type = request.POST.get('property_type')
+        property.price = request.POST.get('price')
+        property.save()
+        messages.success(request, 'Property updated successfully.')
+        return redirect('seller_property_list')
+    return render(request, 'edit_property.html', {'property': property})
+
+
+def seller_delete_property(request, id):
+    property = get_object_or_404(Property, id=id)
+    property.delete()
+    messages.success(request, 'Property deleted successfully.')
+    return redirect('seller_property_list')
+
+
+def seller_pending_properties(request):
+    properties = Property.objects.filter(is_approved=False)
+    return render(request, 'seller_pending_properties.html', {'properties': properties})
+
+
+#Property Management
+
+def add_property(request):
+    if request.method == 'POST':
+        property_type = request.POST.get('property_type')
+        address = request.POST.get('address')
+        location = request.POST.get('location')
+        features = request.POST.get('features', '')
+        description = request.POST.get('description', '')
+        photos = request.FILES.get('photos')
+        price = request.POST.get('price')
+
+        # Optional: Convert price to decimal (with validation)
+        from decimal import Decimal, InvalidOperation
+        try:
+            price_decimal = Decimal(price)
+        except (InvalidOperation, TypeError):
+            price_decimal = None
+
+        # Create Property only if price is valid
+        if price_decimal is not None:
+            Property.objects.create(
+                property_type=property_type,
+                address=address,
+                location=location,
+                features=features,
+                description=description,
+                photos=photos,
+                price=price_decimal,
+                seller=request.user,
+                is_approved=False
+            )
+            messages.info(request, 'Your property has been submitted and is waiting for admin approval.')
+            return redirect('property_list')
+        else:
+            messages.error(request, 'Please enter a valid price.')
+
+    return render(request, 'add_property.html')
 
 
 
+def property_list(request):
+    properties = Property.objects.filter(is_approved=True)
+    return render(request, 'property_list.html', {'properties': properties,'show_approval_message': True})
+
+
+def property_detail(request, pk):
+    property = get_object_or_404(Property, pk=pk)
+    return render(request, 'property_detail.html', {'property': property})
+
+
+#Forget password
 
 def forget_password(request):
     
@@ -262,4 +362,5 @@ def contact(request):
 
 def dashboard(request):
     pending_sellers = CustomUser.objects.filter(is_approved=False,is_superuser=False)
-    return render(request, "dashboard.html", {"pending_sellers": pending_sellers})
+    pending_properties = Property.objects.filter(is_approved=False)
+    return render(request, "dashboard.html", {"pending_sellers": pending_sellers,'pending_properties': pending_properties,})

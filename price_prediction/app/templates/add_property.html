@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Add Property</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-gray-100 py-10">
+    <div class="max-w-4xl mx-auto bg-white p-8 rounded-2xl shadow-md">
+      <h2 class="text-2xl font-bold mb-6 text-gray-800">Add New Property</h2>
+
+      <form
+        action="#"
+        method="POST"
+        enctype="multipart/form-data"
+        class="space-y-6"
+      >
+        {% csrf_token %}
+        <!-- Property Type -->
+        <div>
+          <label
+            for="property_type"
+            class="block text-sm font-medium text-gray-700 mb-1"
+            >Property Type</label
+          >
+          <select
+            id="property_type"
+            name="property_type"
+            class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            required
+          >
+            <option value="" disabled selected>Select property type</option>
+            <option value="House">House</option>
+            <option value="Apartment">Apartment</option>
+            <option value="Commercial">Commercial</option>
+            <option value="Land">Land</option>
+          </select>
+        </div>
+
+        <!-- Property Address -->
+        <div>
+          <label
+            for="address"
+            class="block text-sm font-medium text-gray-700 mb-1"
+            >Property Address</label
+          >
+          <input
+            type="text"
+            id="address"
+            name="address"
+            placeholder="Full address including city, state, ZIP"
+            class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            required
+          />
+        </div>
+
+        <!-- Location -->
+
+        <div>
+          <label
+            for="location"
+            class="block text-sm font-medium text-gray-700 mb-1"
+            >Location</label
+          >
+          <input
+            type="text"
+            id="location"
+            name="location"
+            placeholder="e.g., Kochi, Downtown, Sector 21"
+            class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            required
+          />
+        </div>
+
+        <!-- Property Price -->
+        <div>
+          <label
+            for="price"
+            class="block text-sm font-medium text-gray-700 mb-1"
+            >Property Price (in ₹)</label
+          >
+          <input
+            type="number"
+            id="price"
+            name="price"
+            min="0"
+            placeholder="e.g., 7500000"
+            class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            required
+          />
+        </div>
+
+        <!-- Property Description -->
+        <div>
+          <label
+            for="description"
+            class="block text-sm font-medium text-gray-700 mb-1"
+            >Property Description</label
+          >
+          <textarea
+            id="description"
+            name="description"
+            rows="4"
+            placeholder="Provide a detailed description of the property"
+            class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          ></textarea>
+        </div>
+
+        <!-- Upload Photos -->
+        <div>
+          <label
+            for="photos"
+            class="block text-sm font-medium text-gray-700 mb-1"
+            >Upload Photos</label
+          >
+          <input
+            type="file"
+            id="photos"
+            name="photos"
+            multiple
+            class="w-full border border-gray-300 p-2 rounded-lg file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+          />
+        </div>
+
+        <!-- Submit Button -->
+        <div class="pt-4">
+          <button
+            type="submit"
+            class="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition duration-200"
+          >
+            Add Property
+          </button>
+        </div>
+      </form>
+    </div>
+  </body>
+</html>

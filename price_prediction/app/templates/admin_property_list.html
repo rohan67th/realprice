@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Approved Properties List</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+  </head>
+  <body class="bg-gray-50">
+    <div class="container mx-auto px-4 py-8">
+      <!-- Header Section -->
+      <div
+        class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8"
+      >
+        <div>
+          <h1 class="text-2xl font-bold text-gray-800">Approved Properties</h1>
+          <p class="text-gray-600">
+            List of all properties approved for price prediction
+          </p>
+        </div>
+
+        <div class="mt-4 md:mt-0 flex flex-col sm:flex-row gap-3">
+          <div class="relative">
+            <input
+              type="text"
+              placeholder="Search properties..."
+              class="pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
+            />
+            <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+          </div>
+          <select
+            class="border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            <option>Filter by type</option>
+            <option>Residential</option>
+            <option>Commercial</option>
+            <option>Land</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Property Listing -->
+      <div class="bg-white rounded-lg shadow overflow-hidden">
+        <!-- Table Header -->
+        <div
+          class="grid grid-cols-12 bg-gray-100 p-4 font-medium text-gray-700"
+        >
+          <div class="col-span-1">ID</div>
+          <div class="col-span-3">Property</div>
+          <div class="col-span-2">Location</div>
+          <div class="col-span-2">Type</div>
+          <div class="col-span-2">Price</div>
+          <div class="col-span-2">Actions</div>
+        </div>
+
+        <!-- Property Rows -->
+        <div class="divide-y divide-gray-200">
+          {% for property in properties %}
+          <div class="grid grid-cols-12 p-4 items-center hover:bg-gray-50">
+            <div class="col-span-1 font-medium text-gray-900">
+              #{{ property.id }}
+            </div>
+
+            <div class="col-span-3">
+              <div class="flex items-center space-x-3">
+                {% if property.photos %}
+                <img
+                  src="{{ property.photos.url }}"
+                  alt="Property Photo"
+                  class="w-12 h-12 rounded-md object-cover"
+                />
+                {% else %}
+                <img
+                  src="https://via.placeholder.com/60"
+                  alt="No Image"
+                  class="w-12 h-12 rounded-md object-cover"
+                />
+                {% endif %}
+                <div>
+                  <p class="font-medium">{{ property.property_type }}</p>
+                  <p class="text-sm text-gray-500">
+                    {{ property.features|default:"No features listed" }}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-span-2 text-gray-600">{{ property.location }}</div>
+
+            <div class="col-span-2">
+              <span
+                class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full"
+                >{{ property.property_type }}</span
+              >
+            </div>
+
+            <div class="col-span-2 font-semibold">
+              ₹ {{ property.price|floatformat:0 }}
+            </div>
+
+            <div class="col-span-2 flex space-x-2">
+              <a
+                href="#"
+                class="p-2 text-blue-600 hover:bg-blue-50 rounded-full"
+              >
+                <i class="fas fa-eye"></i>
+              </a>
+
+              <a
+                href="#"
+                class="p-2 text-red-600 hover:bg-red-50 rounded-full"
+                onclick="return confirm('Are you sure you want to delete this property?');"
+              >
+                <i class="fas fa-trash-alt"></i>
+              </a>
+            </div>
+          </div>
+          {% empty %}
+          <div class="p-4 text-center text-gray-500">
+            No approved properties found.
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
