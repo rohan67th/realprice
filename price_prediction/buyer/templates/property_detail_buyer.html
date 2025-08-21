@@ -1,0 +1,773 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>
+      {{ property.property_type }} in {{ property.location }} | RealEstatePro
+    </title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: "#3b82f6",
+              secondary: "#10b981",
+              dark: "#1f2937",
+              accent: "#f59e0b",
+              danger: "#ef4444",
+            },
+            boxShadow: {
+              card: "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)",
+              hover:
+                "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
+              focus: "0 0 0 3px rgba(59, 130, 246, 0.5)",
+            },
+            animation: {
+              "fade-in": "fadeIn 0.3s ease-in-out",
+            },
+            keyframes: {
+              fadeIn: {
+                "0%": { opacity: "0" },
+                "100%": { opacity: "1" },
+              },
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: #f9fafb;
+      }
+      .property-details li {
+        @apply py-3 border-b border-gray-100 last:border-0 flex justify-between;
+      }
+      .property-details li span:first-child {
+        @apply font-medium text-gray-700;
+      }
+      .property-details li span:last-child {
+        @apply text-gray-600 text-right;
+      }
+      .image-gallery {
+        transition: transform 0.3s ease;
+      }
+      .image-gallery:hover {
+        transform: scale(1.02);
+      }
+      .btn {
+        @apply transition-all duration-200 ease-in-out transform hover:scale-105 active:scale-95;
+      }
+      .btn-primary {
+        @apply bg-primary hover:bg-blue-600 text-white;
+      }
+      .btn-warning {
+        @apply bg-accent hover:bg-yellow-600 text-white;
+      }
+      .btn-danger {
+        @apply bg-danger hover:bg-red-600 text-white;
+      }
+    </style>
+  </head>
+  <body class="min-h-screen flex flex-col bg-gray-50">
+    <!-- Navigation -->
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+      <div
+        class="container mx-auto px-4 sm:px-6 py-3 flex justify-between items-center"
+      >
+        <a href="/" class="flex items-center space-x-2">
+          <i class="fas fa-home text-2xl text-primary"></i>
+          <span class="text-xl font-bold text-dark">RealEstatePro</span>
+        </a>
+
+        <div class="flex items-center space-x-4">
+          <nav class="hidden md:flex space-x-6">
+
+            <a
+              href="{% url 'buyer_landing' %}"
+              class="text-gray-600 hover:text-primary transition font-medium"
+              >Properties</a
+            >
+            <a
+              href="/about"
+              class="text-gray-600 hover:text-primary transition font-medium"
+              >About</a
+            >
+            <a
+              href="/contact"
+              class="text-gray-600 hover:text-primary transition font-medium"
+              >Contact</a
+            >
+          </nav>
+
+          <button class="md:hidden text-gray-600 focus:outline-none">
+            <i class="fas fa-bars text-xl"></i>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-1 container mx-auto px-4 sm:px-6 py-8">
+  {% if messages %}
+  <div class="mb-6">
+    {% for message in messages %}
+    <div
+      class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 rounded shadow-sm"
+    >
+      <div class="flex items-center">
+        <i class="fas fa-check-circle mr-2"></i>
+        <p>{{ message }}</p>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <nav class="mb-6 flex" aria-label="Breadcrumb">
+    <ol class="inline-flex items-center space-x-1 md:space-x-2">
+      
+      <li>
+        <div class="flex items-center">
+          <i class="fas fa-chevron-right text-gray-400 mx-2"></i>
+          <a
+            href="{% url 'buyer_landing' %}"
+            class="text-sm text-gray-600 hover:text-primary"
+            >Properties</a
+          >
+        </div>
+      </li>
+      <li aria-current="page">
+        <div class="flex items-center">
+          <i class="fas fa-chevron-right text-gray-400 mx-2"></i>
+          <span class="text-sm font-medium text-gray-800"
+            >{{ property.location }}</span
+          >
+        </div>
+      </li>
+    </ol>
+  </nav>
+  
+  <div class="lg:flex lg:space-x-6">
+
+    <div class="lg:w-2/3 space-y-6">
+
+      <div class="lg:w-2/3 space-y-6">
+        <div class="bg-white rounded-xl shadow-card overflow-hidden image-gallery">
+          {% if property.main_image %}
+          <img
+            src="{{ property.main_image.url }}"
+            alt="{{ property.property_type }}"
+            class="w-full h-80 sm:h-96 object-cover cursor-zoom-in"
+          />
+          {% else %}
+          <div
+            class="w-full h-80 sm:h-96 bg-gray-100 flex items-center justify-center text-gray-400"
+          >
+            <i class="fas fa-image text-5xl"></i>
+          </div>
+          {% endif %}
+        </div>
+      
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+          {% if property.main_image %}
+          <div class="rounded-xl overflow-hidden shadow-sm image-gallery">
+            <img
+              src="{{ property.main_image.url }}"
+              alt="Main image"
+              class="w-full h-28 sm:h-32 object-cover"
+            />
+          </div>
+          {% endif %}
+      
+          {% if property.image_1 %}
+          <div class="rounded-xl overflow-hidden shadow-sm image-gallery">
+            <img
+              src="{{ property.image_1.url }}"
+              alt="Image 1"
+              class="w-full h-28 sm:h-32 object-cover"
+            />
+          </div>
+          {% endif %}
+      
+          {% if property.image_2 %}
+          <div class="rounded-xl overflow-hidden shadow-sm image-gallery">
+            <img
+              src="{{ property.image_2.url }}"
+              alt="Image 2"
+              class="w-full h-28 sm:h-32 object-cover"
+            />
+          </div>
+          {% endif %}
+      
+          {% if property.image_3 %}
+          <div class="rounded-xl overflow-hidden shadow-sm image-gallery">
+            <img
+              src="{{ property.image_3.url }}"
+              alt="Image 3"
+              class="w-full h-28 sm:h-32 object-cover"
+            />
+          </div>
+          {% endif %}
+        </div>
+      </div>
+      
+      <div class="bg-white rounded-xl shadow-card overflow-hidden">
+        <div class="p-6">
+          <h3
+            class="text-xl font-semibold text-dark mb-4 flex items-center"
+          >
+            <i class="fas fa-align-left text-primary mr-2"></i>
+            Property Description
+          </h3>
+          <div class="prose max-w-none text-gray-600">
+            {{ property.description|linebreaks }}
+          </div>
+        </div>
+      </div>
+      
+      <div class="bg-white rounded-xl shadow-card overflow-hidden">
+        <div class="p-6">
+          <h3
+            class="text-xl font-semibold text-dark mb-4 flex items-center"
+          >
+            <i class="fas fa-list-check text-primary mr-2"></i>
+            Features & Amenities
+          </h3>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div class="flex items-center space-x-3">
+              <div
+                class="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center"
+              >
+                <i class="fas fa-bed text-primary"></i>
+              </div>
+              <span>{{ property.bedrooms }} Bedrooms</span>
+            </div>
+            <div class="flex items-center space-x-3">
+              <div
+                class="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center"
+              >
+                <i class="fas fa-bath text-primary"></i>
+              </div>
+              <span>{{ property.bathrooms }} Bathrooms</span>
+            </div>
+            <div class="flex items-center space-x-3">
+              <div
+                class="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center"
+              >
+                <i class="fas fa-ruler-combined text-primary"></i>
+              </div>
+              <span>{{ property.area_sqft }} sq.ft</span>
+            </div>
+            <div class="flex items-center space-x-3">
+              <div
+                class="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center"
+              >
+                <i class="fas fa-car text-primary"></i>
+              </div>
+              <span>Parking Available</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="bg-white rounded-xl shadow-card overflow-hidden">
+        <div class="p-6">
+          <h3
+            class="text-xl font-semibold text-dark mb-4 flex items-center"
+          >
+            <i class="fas fa-exclamation-triangle text-red-500 mr-2"></i>
+            User Complaints
+          </h3>
+      
+          {% if complaints %}
+          <ul class="divide-y divide-gray-100">
+            {% for complaint in complaints %}
+            <li class="py-4">
+              <div class="flex justify-between items-start mb-1">
+                <span class="text-sm font-medium text-red-600 capitalize">
+                  {{ complaint.category|cut:"_"|title }}
+                </span>
+                <span
+                  class="text-xs px-2 py-0.5 rounded-full {% if complaint.priority == 'high' %}bg-red-100 text-red-800 {% elif complaint.priority == 'medium' %}bg-yellow-100 text-yellow-800 {% else %}bg-gray-100 text-gray-800{% endif %}"
+                >
+                  {{ complaint.priority|title }}
+                </span>
+              </div>
+              <p class="text-gray-700 text-sm mb-1">
+                {{ complaint.description }}
+              </p>
+              <p class="text-xs text-gray-400">
+                <i class="far fa-user mr-1"></i>{{ complaint.buyer.name }}
+                <i class="far fa-clock ml-3 mr-1"></i>{{ complaint.created_at|date:"F j, Y" }}
+              </p>
+            </li>
+            {% endfor %}
+          </ul>
+          {% else %}
+          <div class="text-center py-6">
+            <i class="far fa-smile-beam text-3xl text-gray-300 mb-2"></i>
+            <p class="text-gray-500">
+              No complaints have been reported for this property.
+            </p>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  
+    <div class="lg:w-1/3 space-y-6">
+      <div class="bg-white rounded-xl shadow-card overflow-hidden">
+        <div class="p-6">
+          <div class="flex justify-between items-start mb-4">
+            <h2 class="text-2xl font-bold text-dark leading-tight">
+              {{ property.property_type }} in {{ property.location }}
+            </h2>
+            <span
+              class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {% if property.status == 'available' %}bg-green-100 text-green-800 {% else %}bg-gray-100 text-gray-800{% endif %}"
+            >
+              {{ property.status|title }}
+            </span>
+          </div>
+  
+          <div class="flex items-center mb-4">
+            <span class="text-3xl font-bold text-primary"
+              >${{ property.price|floatformat:2 }}</span
+            >
+            {% if property.status == 'rent' %}
+            <span class="ml-2 text-gray-500">/ month</span>
+            {% endif %}
+          </div>
+  
+          <div class="flex items-center text-gray-600 mb-6">
+            <i class="fas fa-map-marker-alt text-gray-400 mr-2"></i>
+            <span>{{ property.address }}</span>
+          </div>
+  
+          <div class="border-t border-gray-100 pt-4">
+            <h3
+              class="text-lg font-semibold text-dark mb-3 flex items-center"
+            >
+              <i class="fas fa-info-circle text-primary mr-2"></i>
+              Property Details
+            </h3>
+            <ul class="property-details">
+              <li>
+                <span>Property ID</span>
+                <span>#{{ property.id }}</span>
+              </li>
+              <li>
+                <span>Property Type</span>
+                <span>{{ property.status|title }}</span>
+              </li>
+              <li>
+                <span>Year Built</span>
+                <span>2020</span>
+              </li>
+            </ul>
+          </div>
+          <div class="mt-4" id="prediction-result">
+            <h4
+              class="text-lg font-semibold text-gray-800 flex items-center mb-2"
+            >
+              <i class="fas fa-chart-line text-primary mr-2"></i>
+              Predicted Price (10 Years)
+            </h4>
+            <p class="text-sm text-gray-600">
+              Based on average growth, the estimated price after 10 years
+              is:
+            </p>
+            <div
+              class="text-xl font-bold text-green-600 mt-2"
+              id="future-price"
+            >
+              Calculating...
+            </div>
+          </div>
+        </div>
+      </div>
+  
+      <div
+        class="bg-white rounded-xl shadow-card overflow-hidden sticky top-6"
+      >
+        <div class="p-6">
+          <h3
+            class="text-xl font-semibold text-dark mb-4 flex items-center"
+          >
+            <i class="fas fa-user-tie text-primary mr-2"></i>
+            Contact Agent
+          </h3>
+  
+          <div
+            class="flex items-center gap-4 mb-6 p-4 bg-gray-50 rounded-lg"
+          >
+            <div
+              class="w-14 h-14 rounded-full bg-gray-200 overflow-hidden flex-shrink-0"
+            >
+              {% if property.seller.profile_picture %}
+              <img
+                src="{{ property.seller.profile_picture.url }}"
+                alt="Agent"
+                class="w-full h-full object-cover"
+              />
+              {% else %}
+              <div
+                class="w-full h-full flex items-center justify-center text-gray-500"
+              >
+                <i class="fas fa-user text-xl"></i>
+              </div>
+              {% endif %}
+            </div>
+            <div>
+              <h4 class="font-medium text-dark">
+                {{ property.seller.get_full_name }}
+              </h4>
+              <p class="text-sm text-gray-600">Real Estate Agent</p>
+              <div class="flex mt-1 space-x-2">
+                <span
+                  class="text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full"
+                  >Verified</span
+                >
+                <span
+                  class="text-xs bg-green-100 text-green-800 px-2 py-0.5 rounded-full"
+                  >Active</span
+                >
+              </div>
+            </div>
+          </div>
+  
+          <div class="grid grid-cols-1 gap-3 mb-6">
+            <a
+              href="{% url 'schedule_visit' buyer.id property.id %}"
+              class="btn btn-primary flex items-center justify-center px-4 py-3 rounded-lg font-medium"
+            >
+              <i class="fas fa-calendar-alt mr-2"></i>
+              Schedule a Visit
+            </a>
+  
+            <a
+              href="{% url 'send_rent_request' property.id buyer.id %}"
+              class="btn btn-warning flex items-center justify-center px-4 py-3 rounded-lg font-medium"
+            >
+              <i class="fas fa-file-signature mr-2"></i>
+              Rent this Property
+            </a>
+  
+            <button
+              onclick="document.getElementById('complaintModal').classList.remove('hidden')"
+              class="btn btn-danger flex items-center justify-center px-4 py-3 rounded-lg font-medium"
+            >
+              <i class="fas fa-exclamation-circle mr-2"></i>
+              Report a Problem
+            </button>
+          </div>
+  
+          <div class="space-y-4">
+            <h4 class="font-medium text-gray-700 flex items-center">
+              <i class="fas fa-address-card text-gray-400 mr-2"></i>
+              Contact Information
+            </h4>
+            <a
+              href="tel:{{ property.seller.phone }}"
+              class="flex items-center space-x-3 text-gray-600 hover:text-primary p-3 bg-gray-50 rounded-lg transition"
+            >
+              <div
+                class="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center"
+              >
+                <i class="fas fa-phone text-primary"></i>
+              </div>
+              <span>{{ property.seller.phone }}</span>
+            </a>
+            <a
+              href="mailto:{{ property.seller.email }}"
+              class="flex items-center space-x-3 text-gray-600 hover:text-primary p-3 bg-gray-50 rounded-lg transition"
+            >
+              <div
+                class="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center"
+              >
+                <i class="fas fa-envelope text-primary"></i>
+              </div>
+              <span>{{ property.seller.email }}</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div> </main>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white pt-12 pb-6">
+      <div class="container mx-auto px-4 sm:px-6">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+          <div>
+            <h3 class="text-xl font-bold mb-4 flex items-center">
+              <i class="fas fa-home text-primary mr-2"></i>
+              RealEstatePro
+            </h3>
+            <p class="text-gray-400">
+              Finding your dream home made simple and efficient.
+            </p>
+            <div class="mt-4 flex space-x-4">
+              <a href="#" class="text-gray-400 hover:text-white">
+                <i class="fab fa-facebook-f"></i>
+              </a>
+              <a href="#" class="text-gray-400 hover:text-white">
+                <i class="fab fa-twitter"></i>
+              </a>
+              <a href="#" class="text-gray-400 hover:text-white">
+                <i class="fab fa-instagram"></i>
+              </a>
+              <a href="#" class="text-gray-400 hover:text-white">
+                <i class="fab fa-linkedin-in"></i>
+              </a>
+            </div>
+          </div>
+          <div>
+            <h4 class="font-semibold mb-4">Quick Links</h4>
+            <ul class="space-y-3 text-gray-400">
+    
+              <li>
+                <a
+                  href="{% url 'buyer_landing' %}"
+                  class="hover:text-white transition flex items-center"
+                >
+                  <i class="fas fa-chevron-right text-xs mr-2"></i>
+                  Properties
+                </a>
+              </li>
+              <li>
+                <a
+                  href="/agents"
+                  class="hover:text-white transition flex items-center"
+                >
+                  <i class="fas fa-chevron-right text-xs mr-2"></i> 
+                  Agents
+                </a>
+              </li>
+              <li>
+                <a
+                  href="/contact"
+                  class="hover:text-white transition flex items-center"
+                >
+                  <i class="fas fa-chevron-right text-xs mr-2"></i>
+                  Contact
+                </a>
+              </li>
+            </ul>
+          </div>
+          <div>
+            <h4 class="font-semibold mb-4">Services</h4>
+            <ul class="space-y-3 text-gray-400">
+              <li>
+                <a
+                  href="#"
+                  class="hover:text-white transition flex items-center"
+                >
+                  <i class="fas fa-chevron-right text-xs mr-2"></i>
+                  Property Valuation
+                </a>
+              </li>
+              <li>
+                <a
+                  href="#"
+                  class="hover:text-white transition flex items-center"
+                >
+                  <i class="fas fa-chevron-right text-xs mr-2"></i>
+                  Mortgage Calculator
+                </a>
+              </li>
+              <li>
+                <a
+                  href="#"
+                  class="hover:text-white transition flex items-center"
+                >
+                  <i class="fas fa-chevron-right text-xs mr-2"></i>
+                  Neighborhood Info
+                </a>
+              </li>
+              <li>
+                <a
+                  href="#"
+                  class="hover:text-white transition flex items-center"
+                >
+                  <i class="fas fa-chevron-right text-xs mr-2"></i>
+                  Moving Checklist
+                </a>
+              </li>
+            </ul>
+          </div>
+          <div>
+            <h4 class="font-semibold mb-4">Contact Us</h4>
+            <ul class="space-y-3 text-gray-400">
+              <li class="flex items-start space-x-3">
+                <i class="fas fa-map-marker-alt mt-1 text-gray-500"></i>
+                <span>123 Real Estate Ave, New York, NY 10001</span>
+              </li>
+              <li class="flex items-center space-x-3">
+                <i class="fas fa-phone-alt text-gray-500"></i>
+                <span>+1 (555) 123-4567</span>
+              </li>
+              <li class="flex items-center space-x-3">
+                <i class="fas fa-envelope text-gray-500"></i>
+                <span>info@realestatepro.com</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div
+          class="border-t border-gray-700 mt-8 pt-6 text-center text-gray-400 text-sm"
+        >
+          <p>&copy; 2023 RealEstatePro. All rights reserved.</p>
+          <div class="mt-2 flex justify-center space-x-4">
+            <a href="#" class="hover:text-white">Privacy Policy</a>
+            <a href="#" class="hover:text-white">Terms of Service</a>
+            <a href="#" class="hover:text-white">Sitemap</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Floating Action Button (Mobile) -->
+    <div class="fixed bottom-6 right-6 md:hidden z-40">
+      <a
+        href="tel:{{ property.seller.phone }}"
+        class="w-14 h-14 bg-primary rounded-full shadow-lg flex items-center justify-center text-white btn"
+      >
+        <i class="fas fa-phone-alt text-xl"></i>
+      </a>
+    </div>
+
+    <!-- Complaint Modal -->
+    <div
+      id="complaintModal"
+      class="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center hidden animate-fade-in"
+    >
+      <div class="bg-white rounded-lg shadow-xl w-full max-w-md mx-4">
+        <div class="p-6">
+          <div class="flex justify-between items-center mb-4">
+            <h3 class="text-lg font-semibold text-dark">Report a Problem</h3>
+            <button
+              onclick="document.getElementById('complaintModal').classList.add('hidden')"
+              class="text-gray-400 hover:text-gray-500"
+            >
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+
+          <form
+            method="post"
+            action="{% url 'submit_complaint' property.id buyer.id %}"
+          >
+            {% csrf_token %}
+            <div class="space-y-4">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1"
+                  >Category</label
+                >
+                <select
+                  name="category"
+                  required
+                  class="w-full border-gray-300 rounded-lg px-4 py-2 focus:ring-primary focus:border-primary"
+                >
+                  <option value="listing_issue">Incorrect Listing</option>
+                  <option value="seller_behavior">Seller Behavior</option>
+                  <option value="fraud">Fraud/Security Issue</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1"
+                  >Priority</label
+                >
+                <select
+                  name="priority"
+                  required
+                  class="w-full border-gray-300 rounded-lg px-4 py-2 focus:ring-primary focus:border-primary"
+                >
+                  <option value="low">Low</option>
+                  <option value="medium" selected>Medium</option>
+                  <option value="high">High</option>
+                </select>
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1"
+                  >Description*</label
+                >
+                <textarea
+                  name="description"
+                  rows="4"
+                  required
+                  class="w-full border-gray-300 rounded-lg px-4 py-2 focus:ring-primary focus:border-primary"
+                  placeholder="Please describe the issue in detail..."
+                ></textarea>
+              </div>
+            </div>
+
+            <div class="mt-6 flex justify-end space-x-3">
+              <button
+                type="button"
+                onclick="document.getElementById('complaintModal').classList.add('hidden')"
+                class="px-4 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                class="px-4 py-2 rounded-lg bg-danger text-white hover:bg-red-600"
+              >
+                Submit Report
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Simple animation for modal
+      document.addEventListener("DOMContentLoaded", function () {
+        const modal = document.getElementById("complaintModal");
+        if (modal) {
+          modal.addEventListener("click", function (e) {
+            if (e.target === modal) {
+              modal.classList.add("hidden");
+            }
+          });
+        }
+      });
+    </script>
+
+    <script>
+  document.addEventListener("DOMContentLoaded", function () {
+    fetch("{% url 'predict_price' property.id %}")
+      .then((res) => res.json())
+      .then((data) => {
+        const resultDiv = document.getElementById("future-price");
+        if (data.success) {
+          resultDiv.textContent = `₹${data.future_price.toLocaleString()}`;
+        } else {
+          resultDiv.textContent = "Prediction not available";
+        }
+      })
+      .catch((err) => {
+        console.error("Prediction Error:", err);
+        document.getElementById("future-price").textContent = "Error fetching data";
+      });
+  });
+</script>
+  </body>
+</html>

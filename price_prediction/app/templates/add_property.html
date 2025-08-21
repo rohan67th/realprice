@@ -58,18 +58,115 @@
         <!-- Location -->
 
         <div>
+  <label for="location" class="block text-sm font-medium text-gray-700 mb-1">
+    Location
+  </label>
+  <div class="flex space-x-2">
+    <input
+      type="text"
+      id="location"
+      name="location"
+      placeholder="e.g., Kochi, Downtown, Sector 21"
+      class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+      required
+    />
+    <button
+      type="button"
+      id="fetch-location"
+      class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
+    >
+      Fetch
+    </button>
+  </div>
+</div>
+
+<!-- Latitude & Longitude -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+  <div>
+    <label
+      for="latitude"
+      class="block text-sm font-medium text-gray-700 mb-1"
+      >Latitude</label
+    >
+    <input
+      type="text"
+      id="latitude"
+      name="latitude"
+      class="w-full p-3 border border-gray-300 rounded-lg"
+  
+    />
+  </div>
+  <div>
+    <label
+      for="longitude"
+      class="block text-sm font-medium text-gray-700 mb-1"
+      >Longitude</label
+    >
+    <input
+      type="text"
+      id="longitude"
+      name="longitude"
+      class="w-full p-3 border border-gray-300 rounded-lg"
+    
+    />
+  </div>
+</div>
+
+        <!-- Area, Bedrooms, Bathrooms -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div>
+            <label
+              for="area_sqft"
+              class="block text-sm font-medium text-gray-700 mb-1"
+              >Area (sq ft)</label
+            >
+            <input
+              type="number"
+              name="area_sqft"
+              id="area_sqft"
+              class="w-full p-3 border border-gray-300 rounded-lg"
+            />
+          </div>
+          <div>
+            <label
+              for="bedrooms"
+              class="block text-sm font-medium text-gray-700 mb-1"
+              >Bedrooms</label
+            >
+            <input
+              type="number"
+              name="bedrooms"
+              id="bedrooms"
+              class="w-full p-3 border border-gray-300 rounded-lg"
+            />
+          </div>
+          <div>
+            <label
+              for="bathrooms"
+              class="block text-sm font-medium text-gray-700 mb-1"
+              >Bathrooms</label
+            >
+            <input
+              type="number"
+              name="bathrooms"
+              id="bathrooms"
+              class="w-full p-3 border border-gray-300 rounded-lg"
+            />
+          </div>
+        </div>
+
+        <!-- Features -->
+        <div>
           <label
-            for="location"
+            for="features"
             class="block text-sm font-medium text-gray-700 mb-1"
-            >Location</label
+            >Features</label
           >
           <input
             type="text"
-            id="location"
-            name="location"
-            placeholder="e.g., Kochi, Downtown, Sector 21"
-            class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            required
+            name="features"
+            id="features"
+            class="w-full p-3 border border-gray-300 rounded-lg"
           />
         </div>
 
@@ -107,21 +204,63 @@
           ></textarea>
         </div>
 
-        <!-- Upload Photos -->
         <div>
           <label
-            for="photos"
+            for="status"
             class="block text-sm font-medium text-gray-700 mb-1"
-            >Upload Photos</label
+            >Status</label
           >
-          <input
-            type="file"
-            id="photos"
-            name="photos"
-            multiple
-            class="w-full border border-gray-300 p-2 rounded-lg file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
-          />
+          <select
+            id="status"
+            name="status"
+            class="w-full p-3 border border-gray-300 rounded-lg"
+            required
+          >
+            <option value="Available">Available</option>
+            <option value="Sold">Sold</option>
+            <option value="Rented">Rented</option>
+          </select>
         </div>
+
+        <!-- Upload Photos -->
+<div>
+  <label class="block text-sm font-medium text-gray-700 mb-1">
+    Upload Photos
+  </label>
+
+  <!-- Main Image -->
+  <input
+    type="file"
+    id="main_image"
+    name="main_image"
+    class="w-full mb-3 border border-gray-300 p-2 rounded-lg file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+  />
+
+  <!-- Additional Image 1 -->
+  <input
+    type="file"
+    id="image_1"
+    name="image_1"
+    class="w-full mb-3 border border-gray-300 p-2 rounded-lg file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+  />
+
+  <!-- Additional Image 2 -->
+  <input
+    type="file"
+    id="image_2"
+    name="image_2"
+    class="w-full mb-3 border border-gray-300 p-2 rounded-lg file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+  />
+
+  <!-- Additional Image 3 -->
+  <input
+    type="file"
+    id="image_3"
+    name="image_3"
+    class="w-full border border-gray-300 p-2 rounded-lg file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+  />
+</div>
+
 
         <!-- Submit Button -->
         <div class="pt-4">
@@ -134,5 +273,33 @@
         </div>
       </form>
     </div>
-  </body>
+    <script>
+  document.getElementById("fetch-location").addEventListener("click", function () {
+    const location = document.getElementById("location").value;
+    if (!location) {
+      alert("Please enter a location first.");
+      return;
+    }
+
+    const proxyUrl = "https://api.allorigins.win/raw?url=";
+    const queryUrl = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(location)}`;
+    const url = proxyUrl + encodeURIComponent(queryUrl);  // Double-encoded
+
+    fetch(url)
+      .then(response => response.json())
+      .then(data => {
+        if (data && data.length > 0) {
+          document.getElementById("latitude").value = data[0].lat;
+          document.getElementById("longitude").value = data[0].lon;
+        } else {
+          alert("Location not found. Try a more specific location.");
+        }
+      })
+      .catch(error => {
+        console.error("Geocoding error:", error);
+        alert("Error fetching location.");
+      });
+  });
+</script>
+</body>
 </html>

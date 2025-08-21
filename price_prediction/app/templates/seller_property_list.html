@@ -20,6 +20,7 @@
         {% endfor %}
       </div>
       {% endif %}
+
       <div class="overflow-x-auto">
         <table class="min-w-full bg-white rounded-lg shadow-md">
           <thead class="bg-gray-200 text-gray-700">
@@ -28,6 +29,7 @@
               <th class="py-3 px-4 text-left">Location</th>
               <th class="py-3 px-4 text-left">Type</th>
               <th class="py-3 px-4 text-left">Price</th>
+              <th class="py-3 px-4 text-left">Status</th> <!-- NEW -->
               <th class="py-3 px-4 text-left">Actions</th>
             </tr>
           </thead>
@@ -38,6 +40,15 @@
               <td class="py-3 px-4">{{ property.location }}</td>
               <td class="py-3 px-4">{{ property.property_type }}</td>
               <td class="py-3 px-4">{{ property.price }}</td>
+              <td class="py-3 px-4">
+                <span class="inline-block px-2 py-1 text-xs font-semibold rounded 
+                  {% if property.status == 'Available' %}bg-green-100 text-green-700
+                  {% elif property.status == 'Sold' %}bg-red-100 text-red-700
+                  {% elif property.status == 'Rented' %}bg-yellow-100 text-yellow-700
+                  {% else %}bg-gray-100 text-gray-700{% endif %}">
+                  {{ property.status }}
+                </span>
+              </td>
               <td class="py-3 px-4 space-x-2">
                 <a
                   href="{% url 'seller_edit_property' property.id %}"
@@ -54,7 +65,7 @@
             </tr>
             {% empty %}
             <tr>
-              <td colspan="5" class="py-4 px-4 text-center text-gray-500">
+              <td colspan="6" class="py-4 px-4 text-center text-gray-500">
                 No properties found.
               </td>
             </tr>

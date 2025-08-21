@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Pending Rent Requests</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen p-8">
+
+  <div class="max-w-6xl mx-auto bg-white p-6 rounded-xl shadow-lg">
+    <h2 class="text-3xl font-bold text-gray-800 mb-6">Pending Rent Requests</h2>
+
+    <div class="overflow-x-auto">
+      <table class="min-w-full bg-white border border-gray-200 rounded-lg overflow-hidden">
+        <thead class="bg-gray-100 text-left">
+          <tr>
+            <th class="py-3 px-4 border-b font-semibold text-gray-700">Property</th>
+            <th class="py-3 px-4 border-b font-semibold text-gray-700">Buyer</th>
+            <th class="py-3 px-4 border-b font-semibold text-gray-700">Start</th>
+            <th class="py-3 px-4 border-b font-semibold text-gray-700">End</th>
+            <th class="py-3 px-4 border-b font-semibold text-gray-700">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for request in rent_requests %}
+            <tr class="border-b hover:bg-gray-50 transition duration-200">
+              <td class="py-3 px-4">{{ request.property.property_type }}</td>
+              <td class="py-3 px-4">{{ request.buyer.name }}</td>
+              <td class="py-3 px-4">{{ request.start_date }}</td>
+              <td class="py-3 px-4">{{ request.end_date }}</td>
+              <td class="py-3 px-4 flex gap-2">
+                <a href="{% url 'approve_rent_request' request.id %}" class="bg-green-500 text-white px-4 py-1.5 rounded hover:bg-green-600 transition">
+  Approve
+</a>
+<a href="{% url 'decline_rent_request' request.id %}" class="bg-red-500 text-white px-4 py-1.5 rounded hover:bg-red-600 transition">
+  Decline
+</a>
+
+              </td>
+            </tr>
+          {% empty %}
+            <tr>
+              <td colspan="5" class="text-center text-gray-500 py-6">No rent requests found.</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</body>
+</html>

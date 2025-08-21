@@ -1,0 +1,55 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Chat Room</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 p-6">
+  <div class="max-w-2xl mx-auto bg-white p-4 rounded shadow">
+    <h2 class="text-xl font-semibold mb-4">
+      Chat with 
+      {% if sender_type == 'seller' %}
+        {{ visit.buyer.name }}
+      {% else %}
+        {{ visit.property.seller.name }}
+      {% endif %}
+    </h2>
+
+    <div class="h-64 overflow-y-auto border p-2 bg-gray-50 rounded mb-4">
+      {% for msg in messages %}
+        {% if sender_type == 'buyer' and msg.sender_buyer and msg.sender_buyer.id == sender_id %}
+          <div class="text-right mb-2">
+            <div class="inline-block bg-blue-100 text-gray-800 px-3 py-2 rounded-lg">
+              {{ msg.content }}<br />
+              <span class="text-xs text-gray-500">{{ msg.timestamp|date:"M d, H:i" }}</span>
+            </div>
+          </div>
+        {% elif sender_type == 'seller' and msg.sender_seller and msg.sender_seller.id == sender_id %}
+          <div class="text-right mb-2">
+            <div class="inline-block bg-green-100 text-gray-800 px-3 py-2 rounded-lg">
+              {{ msg.content }}<br />
+              <span class="text-xs text-gray-500">{{ msg.timestamp|date:"M d, H:i" }}</span>
+            </div>
+          </div>
+        {% else %}
+          <div class="text-left mb-2">
+            <div class="inline-block bg-gray-200 text-black px-3 py-2 rounded-lg">
+              {{ msg.content }}<br />
+              <span class="text-xs text-gray-500">{{ msg.timestamp|date:"M d, H:i" }}</span>
+            </div>
+          </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+
+    <form method="post" class="flex">
+      {% csrf_token %}
+      <input type="hidden" name="sender_type" value="{{ sender_type }}">
+      <input type="hidden" name="sender_id" value="{{ sender_id }}">
+      <input type="text" name="content" required placeholder="Type a message..." class="flex-1 px-4 py-2 border rounded-l" />
+      <button type="submit" class="bg-blue-600 text-white px-4 rounded-r">Send</button>
+    </form>
+  </div>
+</body>
+</html>

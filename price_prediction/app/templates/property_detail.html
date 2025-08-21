@@ -104,7 +104,7 @@
       <!-- Breadcrumbs -->
       <div class="mb-6 text-sm text-gray-600">
         <a href="/" class="hover:text-primary">Home</a> &gt;
-        <a href="/properties" class="hover:text-primary">Properties</a> &gt;
+        <a href="" class="hover:text-primary">Properties</a> &gt;
         <span class="text-gray-800 font-medium">{{ property.location }}</span>
       </div>
 
@@ -112,9 +112,9 @@
         <!-- Left Column - Image Gallery -->
         <div class="lg:w-2/3">
           <div class="bg-white rounded-xl shadow-card overflow-hidden">
-            {% if property.photos %}
+            {% if property.main_image %}
             <img
-              src="{{ property.photos.url }}"
+              src="{{ property.main_image.url }}"
               alt="{{ property.property_type }}"
               class="w-full h-80 sm:h-96 object-cover hover:scale-105 transition-transform duration-300 cursor-zoom-in"
             />
@@ -133,9 +133,9 @@
             <div
               class="bg-white rounded-lg shadow-sm overflow-hidden h-24 cursor-pointer hover:shadow-md transition"
             >
-              {% if property.photos %}
+              {% if property.main_image %}
               <img
-                src="{{ property.photos.url }}"
+                src="{{ property.main_image.url }}"
                 alt="Property image {{ forloop.counter }}"
                 class="w-full h-full object-cover"
               />
@@ -210,13 +210,12 @@
               <span>{{ property.address }}</span>
             </div>
 
-            <button
-              class="w-full bg-primary hover:bg-blue-600 text-white py-3 rounded-lg font-medium transition flex items-center justify-center space-x-2"
-            >
-              <i class="fas fa-heart text-white-500"></i>
-
-              <span>Show Interest</span>
-            </button>
+            <form method="POST" action="#">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-primary">
+                Show Interest
+              </button>
+            </form>
           </div>
 
           <!-- Property Details -->

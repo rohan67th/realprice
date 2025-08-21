@@ -2,100 +2,213 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Edit Profile</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Edit Profile | Real Estate Platform</title>
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css"
     />
+    <style>
+      :root {
+        --primary: #3b82f6;
+        --primary-light: #93c5fd;
+        --primary-dark: #1d4ed8;
+      }
+      body {
+        background-color: #f8fafc;
+      }
+      .profile-picture {
+        transition: all 0.3s ease;
+      }
+      .profile-picture:hover {
+        transform: scale(1.05);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+      .form-input:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+      }
+      .file-upload {
+        transition: all 0.2s ease;
+      }
+      .file-upload:hover {
+        background-color: rgba(59, 130, 246, 0.1);
+      }
+    </style>
 </head>
-<body class="bg-gray-100">
+<body class="bg-gray-50">
 
-  <div class="min-h-screen flex items-center justify-center">
-    <div class="bg-white shadow-lg rounded-lg p-8 max-w-lg w-full">
-      <h2 class="text-3xl font-bold text-gray-800 text-center mb-6">Edit Profile</h2>
+  <div class="min-h-screen flex items-center justify-center p-4">
+    <div class="bg-white rounded-xl shadow-lg overflow-hidden w-full max-w-2xl">
+      <!-- Header Section -->
+      <div class="bg-gradient-to-r from-blue-500 to-blue-600 p-6 text-white">
+        <div class="flex items-center justify-between">
+          <div>
+            <h2 class="text-2xl font-bold">Edit Your Profile</h2>
+            <p class="text-blue-100 mt-1">Update your personal information</p>
+          </div>
+          <div class="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center">
+            <i class="ri-user-settings-line text-xl"></i>
+          </div>
+        </div>
+      </div>
 
+      <!-- Form Section -->
       <form
         method="post"
-        action="{% url 'edit_profile_buyer' %}"
+        action="{% url 'edit_profile_buyer' user.id %}"
         enctype="multipart/form-data"
-        class="space-y-4"
+        class="p-6 space-y-6"
       >
         {% csrf_token %}
 
-        <div>
-          <label class="block text-sm font-medium text-gray-700">Name</label>
-          <input
-            type="text"
-            name="name"
-            value="{{ user.name }}"
-            class="w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-400 focus:border-blue-400"
-          />
+        <!-- Two Column Layout for Basic Info -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- Name Field -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+            <div class="relative">
+              <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <i class="ri-user-3-line text-gray-400"></i>
+              </div>
+              <input
+                type="text"
+                name="name"
+                value="{{ user.name }}"
+                required
+                class="pl-10 w-full px-4 py-2 border border-gray-300 rounded-lg form-input focus:ring-2 focus:ring-blue-400 focus:border-blue-400"
+                placeholder="Your full name"
+              />
+            </div>
+          </div>
+
+          <!-- Email Field -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+            <div class="relative">
+              <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <i class="ri-mail-line text-gray-400"></i>
+              </div>
+              <input
+                type="email"
+                name="email"
+                value="{{ user.email }}"
+                required
+                class="pl-10 w-full px-4 py-2 border border-gray-300 rounded-lg form-input focus:ring-2 focus:ring-blue-400 focus:border-blue-400"
+                placeholder="your.email@example.com"
+              />
+            </div>
+          </div>
+
+          <!-- Phone Field -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+            <div class="relative">
+              <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <i class="ri-phone-line text-gray-400"></i>
+              </div>
+              <input
+                type="tel"
+                name="phone"
+                value="{{ user.phone }}"
+                class="pl-10 w-full px-4 py-2 border border-gray-300 rounded-lg form-input focus:ring-2 focus:ring-blue-400 focus:border-blue-400"
+                placeholder="+1 (123) 456-7890"
+              />
+            </div>
+          </div>
+
+          <!-- Gender Field -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Gender</label>
+            <div class="relative">
+              <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <i class="ri-genderless-line text-gray-400"></i>
+              </div>
+              <select
+                name="gender"
+                class="pl-10 w-full px-4 py-2 border border-gray-300 rounded-lg form-input focus:ring-2 focus:ring-blue-400 focus:border-blue-400"
+              >
+                <option value="">Select Gender</option>
+                <option value="M" {% if user.gender == "M" %}selected{% endif %}>Male</option>
+                <option value="F" {% if user.gender == "F" %}selected{% endif %}>Female</option>
+                <option value="O" {% if user.gender == "O" %}selected{% endif %}>Other</option>
+              </select>
+            </div>
+          </div>
         </div>
 
+        <!-- Address Field -->
         <div>
-          <label class="block text-sm font-medium text-gray-700">Email</label>
-          <input
-            type="email"
-            name="email"
-            value="{{ user.email }}"
-            class="w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-400 focus:border-blue-400"
-          />
+          <label class="block text-sm font-medium text-gray-700 mb-1">Address</label>
+          <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-3 pt-3 pointer-events-none">
+              <i class="ri-map-pin-line text-gray-400"></i>
+            </div>
+            <textarea
+              name="address"
+              rows="3"
+              class="pl-10 w-full px-4 py-2 border border-gray-300 rounded-lg form-input focus:ring-2 focus:ring-blue-400 focus:border-blue-400"
+              placeholder="Your complete address"
+            >{{ user.address }}</textarea>
+          </div>
         </div>
 
+        <!-- Profile Picture Upload -->
         <div>
-          <label class="block text-sm font-medium text-gray-700">Phone</label>
-          <input
-            type="text"
-            name="phone"
-            value="{{ user.phone }}"
-            class="w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-400 focus:border-blue-400"
-          />
+          <label class="block text-sm font-medium text-gray-700 mb-2">Profile Picture</label>
+          
+          <div class="flex items-center space-x-6">
+            <!-- Current Profile Picture -->
+            {% if user.profile_pic %}
+            <div class="relative group">
+              <img
+                src="{{ user.profile_pic.url }}"
+                alt="Current Profile Picture"
+                class="w-20 h-20 rounded-full object-cover border-2 border-white shadow-md profile-picture"
+              />
+              <div class="absolute inset-0 bg-black bg-opacity-30 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                <span class="text-white text-xs font-medium">Current</span>
+              </div>
+            </div>
+            {% else %}
+            <div class="w-20 h-20 rounded-full bg-blue-100 flex items-center justify-center text-blue-500">
+              <i class="ri-user-line text-2xl"></i>
+            </div>
+            {% endif %}
+            
+            <!-- Upload Button -->
+            <div class="flex-1">
+              <label class="file-upload flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-blue-400 transition-colors">
+                <div class="flex flex-col items-center justify-center pt-5 pb-6">
+                  <i class="ri-upload-cloud-2-line text-2xl text-blue-500 mb-2"></i>
+                  <p class="text-sm text-gray-500 text-center">
+                    <span class="font-semibold text-blue-600">Click to upload</span> or drag and drop
+                  </p>
+                  <p class="text-xs text-gray-400 mt-1">PNG, JPG up to 2MB</p>
+                </div>
+                <input 
+                  type="file" 
+                  name="profile_pic" 
+                  class="hidden" 
+                  accept="image/*"
+                />
+              </label>
+            </div>
+          </div>
         </div>
 
-        <div>
-          <label class="block text-sm font-medium text-gray-700">Address</label>
-          <textarea
-            name="address"
-            rows="3"
-            class="w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-400 focus:border-blue-400"
-          >{{ user.address }}</textarea>
-        </div>
-
-        <div>
-          <label class="block text-sm font-medium text-gray-700">Gender</label>
-          <select
-            name="gender"
-            class="w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-400 focus:border-blue-400"
+        <!-- Form Actions -->
+        <div class="flex flex-col sm:flex-row justify-between space-y-4 sm:space-y-0 sm:space-x-4 pt-4">
+          <a 
+            href="{% url 'buyer_profile' user.id %}" 
+            class="flex items-center justify-center px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
           >
-            <option value="">Select</option>
-            <option value="M" {% if user.gender == "M" %}selected{% endif %}>Male</option>
-            <option value="F" {% if user.gender == "F" %}selected{% endif %}>Female</option>
-            <option value="O" {% if user.gender == "O" %}selected{% endif %}>Other</option>
-          </select>
-        </div>
-
-        <div>
-          <label class="block text-sm font-medium text-gray-700">Profile Picture</label>
-          <input
-            type="file"
-            name="profile_pic"
-            class="w-full px-4 py-2 border border-gray-300 rounded bg-white file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
-          />
-          {% if user.profile_pic %}
-          <img
-            src="{{ user.profile_pic.url }}"
-            alt="Profile Picture"
-            class="w-20 h-20 mt-2 rounded-full object-cover"
-          />
-          {% endif %}
-        </div>
-
-        <div class="flex justify-center mt-6">
+            <i class="ri-arrow-left-line mr-2"></i> Cancel
+          </a>
           <button
             type="submit"
-            class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-md shadow-md flex items-center transition-transform transform hover:scale-105"
+            class="flex items-center justify-center px-6 py-2 bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg text-white shadow-md hover:shadow-lg transition-all transform hover:scale-105"
           >
             <i class="ri-save-line mr-2"></i> Save Changes
           </button>
@@ -104,5 +217,37 @@
     </div>
   </div>
 
+  <script>
+    // Display filename when file is selected
+    document.querySelector('input[type="file"]').addEventListener('change', function(e) {
+      const fileName = e.target.files[0]?.name || 'No file selected';
+      const uploadText = document.querySelector('.file-upload p:first-child');
+      if (uploadText) {
+        uploadText.innerHTML = `<span class="font-semibold text-blue-600">${fileName}</span>`;
+      }
+    });
+
+    // Form validation
+    document.querySelector('form').addEventListener('submit', function(e) {
+      const nameInput = document.querySelector('input[name="name"]');
+      const emailInput = document.querySelector('input[name="email"]');
+      
+      if (!nameInput.value.trim()) {
+        alert('Please enter your name');
+        nameInput.focus();
+        e.preventDefault();
+        return false;
+      }
+      
+      if (!emailInput.value.trim()) {
+        alert('Please enter your email');
+        emailInput.focus();
+        e.preventDefault();
+        return false;
+      }
+      
+      return true;
+    });
+  </script>
 </body>
 </html>

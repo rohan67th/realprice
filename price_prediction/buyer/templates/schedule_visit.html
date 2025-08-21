@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Schedule Visit</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .bg-schedule {
+      background-image: linear-gradient(rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.75)), 
+                       url('https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2073&q=80');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+    }
+  </style>
+</head>
+<body class="bg-schedule flex items-center justify-center min-h-screen px-4">
+  <div class="bg-white p-8 rounded-lg shadow-xl w-full max-w-md border border-gray-100 backdrop-blur-sm bg-white/90">
+    <div class="mb-6 text-center">
+      <h2 class="text-2xl font-bold text-gray-800 mb-1">Schedule a Visit</h2>
+      <p class="text-gray-600">Viewing for {{ property.property_type }} in {{ property.location }}</p>
+    </div>
+    
+    <form method="POST">
+      {% csrf_token %}
+      
+      <div class="mb-5">
+        <label class="block text-gray-700 font-medium mb-2">Select Date</label>
+        <input type="date" name="scheduled_date" required 
+               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
+      </div>
+
+      <div class="mb-5">
+        <label class="block text-gray-700 font-medium mb-2">Select Time</label>
+        <input type="time" name="scheduled_time" required 
+               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
+      </div>
+
+      <div class="mb-6">
+        <label class="block text-gray-700 font-medium mb-2">Message (optional)</label>
+        <textarea name="message" rows="3" 
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"></textarea>
+      </div>
+
+      <button type="submit" 
+              class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-lg transition duration-200 transform hover:scale-[1.02] shadow-md">
+        Confirm Schedule
+      </button>
+    </form>
+  </div>
+</body>
+</html>

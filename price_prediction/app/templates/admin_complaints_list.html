@@ -1,0 +1,52 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin - Complaint List</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 p-6">
+
+    <div class="max-w-7xl mx-auto bg-white shadow rounded p-6">
+        <h2 class="text-2xl font-semibold mb-4">Complaint Management</h2>
+
+        <table class="min-w-full bg-white border">
+            <thead>
+                <tr class="bg-gray-200 text-left">
+                    <th class="py-2 px-4 border">ID</th>
+                    <th class="py-2 px-4 border">Property</th>
+                    <th class="py-2 px-4 border">Buyer</th>
+                    <th class="py-2 px-4 border">Seller</th>
+                    <th class="py-2 px-4 border">Category</th>
+                    <th class="py-2 px-4 border">Priority</th>
+                    <th class="py-2 px-4 border">Status</th>
+                    <th class="py-2 px-4 border">Created At</th>
+                    <th class="py-2 px-4 border">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for complaint in complaints %}
+                <tr class="border-t">
+                    <td class="py-2 px-4 border">{{ complaint.id }}</td>
+                    <td class="py-2 px-4 border">{{ complaint.property.property_type }}</td>
+                    <td class="py-2 px-4 border">{{ complaint.buyer.name }}</td>
+                    <td class="py-2 px-4 border">{{ complaint.property.seller.username }}</td>
+                    <td class="py-2 px-4 border">{{ complaint.get_category_display }}</td>
+                    <td class="py-2 px-4 border">{{ complaint.get_priority_display }}</td>
+                    <td class="py-2 px-4 border">{{ complaint.get_status_display }}</td>
+                    <td class="py-2 px-4 border">{{ complaint.created_at|date:"Y-m-d H:i" }}</td>
+                    <td class="py-2 px-4 border">
+    <span class="text-gray-700">Updated</span>
+</td>
+
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="8" class="text-center py-4">No complaints found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

@@ -1,300 +1,378 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Property Listings</title>
-<script src="https://cdn.tailwindcss.com/3.4.16"></script>
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet" />
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-<link
-  rel="stylesheet"
-  href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css"
-/>
-<script>
-  tailwind.config = {
-    theme: {
-      extend: {
-        colors: {
-          primary: "#4f46e5",
-          secondary: "#6366f1",
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PropertyPredict - Find Your Dream Property</title>
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: { primary: "#4F46E5", secondary: "#10B981" },
+            borderRadius: {
+              none: "0px",
+              sm: "4px",
+              DEFAULT: "8px",
+              md: "12px",
+              lg: "16px",
+              xl: "20px",
+              "2xl": "24px",
+              "3xl": "32px",
+              full: "9999px",
+              button: "8px",
+            },
+          },
         },
-        borderRadius: {
-          none: "0px",
-          sm: "4px",
-          DEFAULT: "8px",
-          md: "12px",
-          lg: "16px",
-          xl: "20px",
-          "2xl": "24px",
-          "3xl": "32px",
-          full: "9999px",
-          button: "8px",
-        },
-        fontFamily: {
-          sans: ["Inter", "sans-serif"],
-        },
-      },
-    },
-  };
-</script>
-<style>
-  body {
-    font-family: "Inter", sans-serif;
-  }
-  input[type="number"]::-webkit-inner-spin-button,
-  input[type="number"]::-webkit-outer-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-  }
-  .property-card {
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-  }
-  .property-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1),
-      0 8px 10px -6px rgba(0, 0, 0, 0.05);
-  }
-  .custom-select {
-    appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236b7280'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 0.5rem center;
-    background-size: 1.5em 1.5em;
-  }
-  button, .property-card button {
-    cursor: pointer;
-  }
-</style>
-</head>
-<body class="bg-white min-h-screen">
-  <!-- Header -->
-  <header
-    class="fixed top-0 left-0 right-0 bg-white/95 backdrop-blur-sm shadow-sm z-50"
-  >
-    <div class="container mx-auto px-4 py-4 flex justify-between items-center">
-      <a href="#" class="text-3xl font-['Pacifico'] text-primary">logo</a>
-      <a
-        href="profile.html"
-        class="flex items-center space-x-2 text-gray-700 hover:text-primary transition-colors"
-        ><i class="ri-user-line text-xl cursor-pointer"></i>
-        <span>Profile</span></a
+      };
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.5.0/echarts.min.js"></script>
+    <style>
+      :where([class^="ri-"])::before {
+        content: "\f3c2";
+      }
+      body {
+        font-family: "Inter", sans-serif;
+      }
+      .price-trend-up {
+        color: #10b981;
+      }
+      .price-trend-down {
+        color: #ef4444;
+      }
+      .range-slider::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: #4f46e5;
+        cursor: pointer;
+      }
+      .range-slider::-moz-range-thumb {
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: #4f46e5;
+        cursor: pointer;
+      }
+      .custom-checkbox {
+        display: none;
+      }
+      .custom-checkbox + label {
+        position: relative;
+        padding-left: 28px;
+        cursor: pointer;
+        display: inline-block;
+      }
+      .custom-checkbox + label:before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 20px;
+        height: 20px;
+        border: 2px solid #d1d5db;
+        background: #fff;
+        border-radius: 4px;
+      }
+      .custom-checkbox:checked + label:before {
+        background: #4f46e5;
+        border-color: #4f46e5;
+      }
+      .custom-checkbox:checked + label:after {
+        content: "";
+        position: absolute;
+        left: 7px;
+        top: 3px;
+        width: 6px;
+        height: 11px;
+        border: solid white;
+        border-width: 0 2px 2px 0;
+        transform: rotate(45deg);
+      }
+      .category-scroll::-webkit-scrollbar {
+        display: none;
+      }
+    </style>
+  </head>
+  <body class="min-h-screen bg-gray-50">
+    <!-- Header Section -->
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+      <div
+        class="container mx-auto px-4 py-4 flex items-center justify-between"
       >
-    </div>
-  </header>
+        <!-- Left Side: Logo + Nav -->
+        <div class="flex items-center space-x-10">
+          <a href="#" class="text-2xl text-primary">AI PRICE PREDICTION</a>
+        </div>
 
-  <!-- Main Content -->
-  <main class="pb-12 mt-20">
-    <!-- Search Section -->
-    <section class="py-12 bg-white">
-      <div class="container mx-auto px-4">
-        <div
-          class="bg-white rounded-xl shadow-lg p-6 relative z-10 border border-gray-100"
-        >
-          <div class="grid md:grid-cols-4 gap-4">
-            <div class="relative">
-              <div
-                class="absolute inset-y-0 left-3 flex items-center pointer-events-none"
-              >
-                <i class="ri-map-pin-line text-gray-400"></i>
-              </div>
-              <input
-                type="text"
-                placeholder="Location"
-                class="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-button focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-colors"
-              />
-            </div>
-            <div class="relative">
-              <div
-                class="absolute inset-y-0 left-3 flex items-center pointer-events-none"
-              >
-                <i class="ri-home-line text-gray-400"></i>
-              </div>
-              <select
-                class="w-full pl-10 pr-8 py-3 border border-gray-200 rounded-button focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-colors appearance-none bg-white"
-              >
-                <option value="">Property Type</option>
-                <option value="house">House</option>
-                <option value="apartment">Apartment</option>
-                <option value="condo">Condo</option>
-              </select>
-            </div>
-            <div class="relative">
-              <div
-                class="absolute inset-y-0 left-3 flex items-center pointer-events-none"
-              >
-                <i class="ri-money-dollar-circle-line text-gray-400"></i>
-              </div>
-              <select
-                class="w-full pl-10 pr-8 py-3 border border-gray-200 rounded-button focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-colors appearance-none bg-white"
-              >
-                <option value="">Price Range</option>
-                <option value="0-300000">$0 - $300,000</option>
-                <option value="300000-600000">$300,000 - $600,000</option>
-                <option value="600000-1000000">$600,000 - $1,000,000</option>
-                <option value="1000000+">$1,000,000+</option>
-              </select>
-            </div>
-            <button
-              class="bg-primary text-white px-6 py-3 rounded-button hover:bg-primary/80 transition-colors whitespace-nowrap"
+        <!-- Right Side: Profile -->
+        <div class="ml-auto flex items-center space-x-4">
+          <a
+            href="{% url 'buyer_profile' buyer.id %}"
+            class="flex items-center space-x-3 bg-white px-4 py-2 rounded-lg shadow hover:bg-blue-50 transition-all duration-200"
+          >
+            <div
+              class="w-10 h-10 flex items-center justify-center bg-blue-100 rounded-full"
             >
-              Search Properties
-            </button>
+              <i class="ri-user-line text-blue-600 text-xl"></i>
+            </div>
+            <span class="text-gray-800 font-medium">Profile</span>
+          </a>
+
+          <!-- Optional: Hamburger for small screens -->
+          <div class="md:hidden w-10 h-10 flex items-center justify-center">
+            <i class="ri-menu-line text-gray-600 ri-lg"></i>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="relative">
+      <div
+        style="
+          background-image: url('https://readdy.ai/api/search-image?query=luxury%20modern%20real%20estate%20property%20with%20a%20beautiful%20house%20and%20garden%2C%20professional%20real%20estate%20photography%2C%20high-end%20property%2C%20clean%20modern%20architecture%2C%20soft%20natural%20lighting%2C%20minimalist%20design%2C%20high-quality%20image%20perfect%20for%20a%20real%20estate%20website%20hero%20section%2C%20left%20side%20has%20empty%20space%20for%20text%20overlay&width=1920&height=800&seq=1&orientation=landscape');
+        "
+        class="bg-cover bg-center h-[600px] relative"
+      >
+        <div
+          class="absolute inset-0 bg-gradient-to-r from-gray-900/80 to-gray-900/30"
+        ></div>
+        <div class="container mx-auto px-4 h-full flex items-center">
+          <div class="w-full max-w-2xl text-white relative z-10">
+            <h1 class="text-5xl font-bold mb-6">Find Your Dream Property</h1>
+            <p class="text-xl mb-8">
+              Discover the perfect property with our advanced price prediction
+              technology. Make smarter buying decisions today.
+            </p>
           </div>
         </div>
       </div>
     </section>
-
     <!-- Featured Properties Section -->
+    <section class="py-16 bg-white">
+      <div class="container mx-auto px-4">
+        <div class="flex justify-between items-center mb-10">
+          <h2 class="text-3xl font-bold text-gray-900">Featured Properties</h2>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {% for property in properties %}
+          <div
+            class="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow"
+          >
+            <div class="relative">
+              {% if property.main_image %}
+              <img
+                src="{{ property.main_image.url }}"
+                alt="{{ property.property_type }}"
+                class="w-full h-64 object-cover object-top"
+              />
+              {% else %}
+              <img
+                src="https://via.placeholder.com/600x400?text=No+Image"
+                alt="No Image"
+                class="w-full h-64 object-cover object-top"
+              />
+              {% endif %}
+            </div>
+            <div class="p-6">
+              <div class="flex justify-between items-center mb-2">
+                <h3 class="text-xl font-bold text-gray-900">
+                  ${{ property.price }}
+                </h3>
+              </div>
+              <p class="text-gray-700 mb-4">{{ property.property_type }}</p>
+              <div class="flex items-center text-gray-500 mb-4">
+                <div class="w-5 h-5 flex items-center justify-center">
+                  <i class="ri-map-pin-line"></i>
+                </div>
+                <span class="ml-1 text-sm">{{ property.address }}</span>
+              </div>
+
+              <a
+                href="{% url 'property_detail_buyer' buyer.id property.id %}"
+                class="block text-center w-full py-3 bg-primary text-white font-medium rounded-button whitespace-nowrap hover:bg-primary/90 transition-colors"
+              >
+                View Details
+              </a>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </section>
+    <!-- Price Prediction Tools Section -->
     <section class="py-16 bg-gray-50">
       <div class="container mx-auto px-4">
-        <div class="text-center max-w-2xl mx-auto mb-12">
+        <div class="text-center mb-12">
           <h2 class="text-3xl font-bold text-gray-900 mb-4">
-            Featured Properties
+            Advanced Price Prediction Tools
           </h2>
-          <p class="text-gray-600">
-            Discover our hand-picked selection of premium properties that match
-            your lifestyle and preferences.
+          <p class="text-gray-600 max-w-3xl mx-auto">
+            Our AI-powered prediction tools analyze market trends, historical
+            data, and local factors to give you the most accurate property price
+            forecasts.
           </p>
         </div>
 
-        <!-- Property Grid -->
-        <div class="flex flex-col lg:flex-row items-center gap-4 mb-8">
-          <div class="relative flex-1 w-full">
-            <div
-              class="absolute inset-y-0 left-3 flex items-center pointer-events-none"
-            >
-              <i class="ri-search-line text-gray-400"></i>
-            </div>
-            <input
-              type="text"
-              placeholder="Search properties by location, type, etc."
-              class="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-button focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-colors"
-            />
-          </div>
-          <div class="flex items-center gap-3 w-full lg:w-auto">
-            <div class="relative flex-1 lg:flex-none">
-              <select
-                class="w-full lg:w-44 custom-select pr-8 py-2.5 pl-4 border border-gray-200 rounded-button bg-white focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-colors"
-              >
-                <option value="">Property Type</option>
-                <option value="apartment">Apartment</option>
-                <option value="house">House</option>
-                <option value="condo">Condo</option>
-                <option value="villa">Villa</option>
-                <option value="land">Land</option>
-              </select>
-            </div>
-            <div class="relative flex-1 lg:flex-none">
-              <select
-                class="w-full lg:w-44 custom-select pr-8 py-2.5 pl-4 border border-gray-200 rounded-button bg-white focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-colors"
-              >
-                <option value="">Price Range</option>
-                <option value="0-100000">$0 - $100,000</option>
-                <option value="100000-300000">$100,000 - $300,000</option>
-                <option value="300000-500000">$300,000 - $500,000</option>
-                <option value="500000-1000000">$500,000 - $1,000,000</option>
-                <option value="1000000+">$1,000,000+</option>
-              </select>
-            </div>
-            <div class="relative flex-1 lg:flex-none">
-              <select
-                class="w-full lg:w-44 custom-select pr-8 py-2.5 pl-4 border border-gray-200 rounded-button bg-white focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-colors"
-              >
-                <option value="newest">Newest First</option>
-                <option value="price-low">Price: Low to High</option>
-                <option value="price-high">Price: High to Low</option>
-                <option value="popular">Most Popular</option>
-              </select>
-            </div>
-            <button
-              class="bg-primary text-white px-6 py-2.5 rounded-button hover:bg-primary/80 transition-colors whitespace-nowrap flex items-center"
-            >
-              <i class="ri-filter-3-line mr-2"></i> Filter
-            </button>
-          </div>
-        </div>
-
-        <!-- Results Count -->
-        <div class="flex justify-between items-center mb-6">
-          <h2 class="text-xl font-semibold text-gray-800">Showing 24 Properties</h2>
-          <div class="flex items-center gap-2">
-            <span class="text-gray-600">View:</span>
-            <button
-              class="w-8 h-8 flex items-center justify-center bg-primary text-white rounded cursor-pointer"
-            >
-              <i class="ri-layout-grid-line"></i>
-            </button>
-            <button
-              class="w-8 h-8 flex items-center justify-center bg-gray-100 text-gray-600 rounded hover:bg-gray-200 transition-colors cursor-pointer"
-            >
-              <i class="ri-list-check"></i>
-            </button>
-          </div>
-        </div>
-
-        <!-- Property Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          <!-- Property Card 1 -->
-          <div class="property-card bg-white rounded-lg overflow-hidden shadow-sm">
-            <div class="relative">
-              <img
-                src="https://readdy.ai/api/search-image?query=modern%20luxury%20apartment%20building%20with%20large%20windows%2C%20balconies%2C%20and%20contemporary%20architecture%2C%20professional%20real%20estate%20photography%2C%20bright%20daylight%2C%20clean%20exterior&width=600&height=400&seq=prop1&orientation=landscape"
-                alt="Luxury Apartment"
-                class="w-full h-48 object-cover object-top"
-              />
-              <div class="absolute top-3 left-3">
-                <span
-                  class="bg-primary text-white text-xs font-semibold px-2 py-1 rounded"
-                  >Featured</span
-                >
+        <div class="text-center">
+          <a
+            href="{% url 'predict_price' %}"
+            class="px-8 py-4 bg-primary text-white font-medium !rounded-button whitespace-nowrap hover:bg-primary/90 transition-colors text-lg inline-block"
+          >
+            <div class="flex items-center">
+              <div class="w-6 h-6 flex items-center justify-center mr-2">
+                <i class="ri-line-chart-line"></i>
               </div>
-              <div class="absolute top-3 right-3">
-                <button
-                  class="w-8 h-8 flex items-center justify-center bg-white/90 rounded-full text-gray-600 hover:text-primary transition-colors cursor-pointer"
-                >
-                  <i class="ri-heart-line"></i>
-                </button>
-              </div>
+              <span>Get Personalized Price Prediction</span>
             </div>
-            <div class="p-4">
-              <div class="flex justify-between items-start mb-2">
-                <h3 class="text-lg font-semibold text-gray-800 line-clamp-1">
-                  Riverside Luxury Apartment
-                </h3>
-                <span class="text-primary font-bold">$425,000</span>
-              </div>
-              <div class="flex items-center text-gray-500 mb-3">
-                <i class="ri-map-pin-line mr-1"></i>
-                <span class="text-sm">Manhattan, New York City</span>
-              </div>
-              <div class="flex items-center justify-between mb-4">
-                <div class="flex items-center text-gray-600">
-                  <i class="ri-hotel-bed-line mr-1"></i>
-                  <span class="text-sm">3 Beds</span>
-                </div>
-                <div class="flex items-center text-gray-600">
-                  <i class="ri-shower-line mr-1"></i>
-                  <span class="text-sm">2 Baths</span>
-                </div>
-                <div class="flex items-center text-gray-600">
-                  <i class="ri-arrow-left-right-line mr-1"></i>
-                  <span class="text-sm">1,500 sqft</span>
-                </div>
-              </div>
-              <button
-                class="bg-primary w-full text-white py-2 rounded-button hover:bg-primary/80 transition-colors"
-              >
-                View Details
-              </button>
-            </div>
-          </div>
-
+          </a>
         </div>
       </div>
     </section>
-  </main>
-</body>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white pt-16 pb-8">
+      <div class="container mx-auto px-4">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
+          <div>
+            <a
+              href="#"
+              class="text-2xl font-['Pacifico'] text-white mb-6 inline-block"
+              >logo</a
+            >
+            <p class="text-gray-400 mb-6">
+              We help you find the perfect property with accurate price
+              predictions and market insights.
+            </p>
+            <div class="flex space-x-4">
+              <a
+                href="#"
+                class="w-10 h-10 flex items-center justify-center bg-gray-800 rounded-full hover:bg-primary transition-colors"
+              >
+                <i class="ri-facebook-fill"></i>
+              </a>
+              <a
+                href="#"
+                class="w-10 h-10 flex items-center justify-center bg-gray-800 rounded-full hover:bg-primary transition-colors"
+              >
+                <i class="ri-twitter-fill"></i>
+              </a>
+              <a
+                href="#"
+                class="w-10 h-10 flex items-center justify-center bg-gray-800 rounded-full hover:bg-primary transition-colors"
+              >
+                <i class="ri-instagram-line"></i>
+              </a>
+              <a
+                href="#"
+                class="w-10 h-10 flex items-center justify-center bg-gray-800 rounded-full hover:bg-primary transition-colors"
+              >
+                <i class="ri-linkedin-fill"></i>
+              </a>
+            </div>
+          </div>
+          <div>
+            <h3 class="text-lg font-bold mb-6">Quick Links</h3>
+            <ul class="space-y-4">
+              <li>
+                <a
+                  href="#"
+                  class="text-gray-400 hover:text-white transition-colors"
+                  >Home</a
+                >
+              </li>
+              <li>
+                <a
+                  href="#"
+                  class="text-gray-400 hover:text-white transition-colors"
+                  >Buy Property</a
+                >
+              </li>
+              <li>
+                <a
+                  href="#"
+                  class="text-gray-400 hover:text-white transition-colors"
+                  >Price Predictions</a
+                >
+              </li>
+              <li>
+                <a
+                  href="#"
+                  class="text-gray-400 hover:text-white transition-colors"
+                  >Market Reports</a
+                >
+              </li>
+              <li>
+                <a
+                  href="#"
+                  class="text-gray-400 hover:text-white transition-colors"
+                  >About Us</a
+                >
+              </li>
+            </ul>
+          </div>
+          <div>
+            <h3 class="text-lg font-bold mb-6">Contact Us</h3>
+            <ul class="space-y-4">
+              <li class="flex items-start">
+                <div class="w-5 h-5 flex items-center justify-center mt-1 mr-3">
+                  <i class="ri-map-pin-line text-primary"></i>
+                </div>
+                <span class="text-gray-400"
+                  >1234 Property Lane<br />San Francisco, CA 94107</span
+                >
+              </li>
+              <li class="flex items-center">
+                <div class="w-5 h-5 flex items-center justify-center mr-3">
+                  <i class="ri-phone-line text-primary"></i>
+                </div>
+                <span class="text-gray-400">(555) 123-4567</span>
+              </li>
+              <li class="flex items-center">
+                <div class="w-5 h-5 flex items-center justify-center mr-3">
+                  <i class="ri-mail-line text-primary"></i>
+                </div>
+                <span class="text-gray-400">info@propertyprediction.com</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div
+          class="pt-8 border-t border-gray-800 flex flex-col md:flex-row justify-between items-center"
+        >
+          <p class="text-gray-400 mb-4 md:mb-0">
+            © 2025 PropertyPredict. All rights reserved.
+          </p>
+          <div class="flex space-x-6">
+            <a href="#" class="text-gray-400 hover:text-white transition-colors"
+              >Terms of Service</a
+            >
+            <a href="#" class="text-gray-400 hover:text-white transition-colors"
+              >Privacy Policy</a
+            >
+            <a href="#" class="text-gray-400 hover:text-white transition-colors"
+              >Cookie Policy</a
+            >
+          </div>
+        </div>
+      </div>
+    </footer>
+  </body>
 </html>

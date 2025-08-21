@@ -115,7 +115,6 @@
         class="container mx-auto px-6 py-4 flex justify-between items-center"
       >
         <a href="#" class="flex items-center space-x-2">
-          <h1 class="logo text-3xl text-primary font-semibold">logo</h1>
           <span class="text-gray-600 font-semibold text-lg">Properties</span>
         </a>
         <a
@@ -164,7 +163,7 @@
           tabindex="0"
         >
           <img
-            src="{{ property.photos.url }}"
+            src="{{ property.main_image.url }}"
             alt="{{ property.name }}"
             class="w-full h-48 object-cover"
             loading="lazy"

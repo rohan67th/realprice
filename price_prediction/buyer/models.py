@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.hashers import make_password, check_password
 import uuid
+from app.models import Property
+
 
 GENDER_CHOICES = [
     ('M', 'Male'),
@@ -22,7 +24,10 @@ class BuyerManager(models.Manager):
         buyer.save(using=self._db)
         return buyer
 
+
+
 class Buyer(models.Model):
+
     name = models.CharField(max_length=100)  
     email = models.EmailField(unique=True)
     phone = models.CharField(max_length=15)
@@ -53,3 +58,118 @@ class PasswordResetBuyer(models.Model):
 
     def __str__(self):
         return f"Password reset for {self.user.username} at {self.created_when}"
+    
+
+
+class BuyerInterest(models.Model):
+    buyer = models.ForeignKey(Buyer, on_delete=models.CASCADE)
+    property = models.ForeignKey(Property, on_delete=models.CASCADE)
+    status = models.CharField(max_length=20, choices=[
+        ('Pending', 'Pending'),
+        ('Approved', 'Approved'),
+        ('Rejected', 'Rejected')
+    ], default='Pending')
+    timestamp = models.DateTimeField(auto_now_add=True)
+    visit_scheduled = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"{self.buyer.username} -> {self.property.property_type}"
+
+
+
+class VisitSchedule(models.Model):
+    STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('approved', 'Approved'),
+        ('declined', 'Declined'),
+    ]
+    buyer = models.ForeignKey(Buyer, on_delete=models.CASCADE)
+    property = models.ForeignKey(Property, on_delete=models.CASCADE)
+    scheduled_date = models.DateField()
+    scheduled_time = models.TimeField()
+    message = models.TextField(blank=True, null=True)
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    is_notified = models.BooleanField(default=False)
+    is_seen_by_buyer = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"{self.buyer.name} visit to {self.property}"
+    
+
+from app.models import CustomUser
+class Message(models.Model):
+    visit = models.ForeignKey(VisitSchedule, on_delete=models.CASCADE,related_name='chat_messages')
+    sender_buyer = models.ForeignKey(Buyer, on_delete=models.CASCADE, null=True, blank=True)
+    sender_seller = models.ForeignKey(CustomUser, on_delete=models.CASCADE, null=True, blank=True)
+    content = models.TextField()
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        sender = self.sender_buyer if self.sender_buyer else self.sender_seller
+        return f"From {sender} at {self.timestamp}"
+    
+
+
+class Complaint(models.Model):
+    CATEGORY_CHOICES = [
+        ('listing_issue', 'Incorrect Listing'),
+        ('seller_behavior', 'Seller Behavior'),
+        ('fraud', 'Fraud/Security Issue'),
+        ('other', 'Other'),
+    ]
+
+    PRIORITY_CHOICES = [
+        ('low', 'Low'),
+        ('medium', 'Medium'),
+        ('high', 'High'),
+    ]
+
+    STATUS_CHOICES = [
+        ('open', 'Open'),
+        ('in_progress', 'In Progress'),
+        ('resolved', 'Resolved'),
+    ]
+
+
+    property = models.ForeignKey(Property, on_delete=models.CASCADE, related_name='complaints')
+    buyer = models.ForeignKey(Buyer, on_delete=models.CASCADE)
+    category = models.CharField(max_length=50, choices=CATEGORY_CHOICES)
+    priority = models.CharField(max_length=10, choices=PRIORITY_CHOICES)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='open')
+    description = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Complaint by {self.buyer} on {self.property}"
+    
+
+
+
+class RentRequest(models.Model):
+    property = models.ForeignKey(Property, on_delete=models.CASCADE, related_name='rent_requests')
+    buyer = models.ForeignKey(Buyer, on_delete=models.CASCADE, related_name='rental_requests')
+    
+    start_date = models.DateField()
+    end_date = models.DateField()
+    
+    STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('approved', 'Approved'),
+        ('rejected', 'Rejected'),
+    ]
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')
+
+    # Notification and payment tracking
+    notified = models.BooleanField(default=False)  # Set True when seller approves
+    is_paid = models.BooleanField(default=False)   # Set True after payment
+
+    is_seen_by_buyer = models.BooleanField(default=False)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+
+    def __str__(self):
+        return f"RentRequest #{self.id} by {self.buyer.name} for {self.property.property_type}"

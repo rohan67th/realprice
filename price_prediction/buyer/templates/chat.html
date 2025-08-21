@@ -1,0 +1,163 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chat Room</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <style>
+    .chat-container {
+      scrollbar-width: thin;
+      scrollbar-color: #cbd5e0 #f3f4f6;
+    }
+    .chat-container::-webkit-scrollbar {
+      width: 6px;
+    }
+    .chat-container::-webkit-scrollbar-track {
+      background: #f3f4f6;
+    }
+    .chat-container::-webkit-scrollbar-thumb {
+      background-color: #cbd5e0;
+      border-radius: 3px;
+    }
+    .message-enter {
+      animation: fadeIn 0.3s ease-in-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body class="bg-gray-100 min-h-screen p-4 md:p-6">
+  <div class="max-w-2xl mx-auto bg-white rounded-xl shadow-md overflow-hidden">
+    <!-- Chat Header -->
+    <div class="bg-gradient-to-r from-blue-600 to-blue-500 p-4 text-white">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center space-x-3">
+          <i class="fas fa-comments text-xl"></i>
+          <h2 class="text-xl font-semibold">
+            Chat with 
+            {% if sender_type == 'seller' %}
+              {{ visit.buyer.name }}
+            {% else %}
+              {{ visit.property.seller.name }}
+            {% endif %}
+          </h2>
+        </div>
+        <div class="text-sm bg-white/20 px-2 py-1 rounded-full">
+          {% if sender_type == 'seller' %}
+            Buyer
+          {% else %}
+
+          {% endif %}
+        </div>
+      </div>
+      <div class="text-sm opacity-90 mt-1">
+        {% if sender_type == 'seller' %}
+          Regarding property: {{ visit.property.property_type }} in {{ visit.property.location }}
+        {% else %}
+         
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Chat Messages -->
+    <div class="chat-container h-80 md:h-96 p-4 overflow-y-auto bg-gray-50">
+      {% if not messages %}
+        <div class="h-full flex flex-col items-center justify-center text-gray-400">
+          <i class="fas fa-comment-dots text-4xl mb-2"></i>
+          <p>No messages yet</p>
+          <p class="text-sm mt-1">Start the conversation</p>
+        </div>
+      {% else %}
+        {% for msg in messages %}
+          {% if sender_type == 'buyer' and msg.sender_buyer and msg.sender_buyer.id == sender_id %}
+            <!-- Sent message (buyer) -->
+            <div class="flex justify-end mb-3 message-enter">
+              <div class="max-w-xs md:max-w-md">
+                <div class="bg-blue-100 text-gray-800 px-4 py-2 rounded-t-2xl rounded-l-2xl shadow-sm">
+                  {{ msg.content }}
+                </div>
+                <div class="text-right text-xs text-gray-500 mt-1 pr-1">
+                  <i class="far fa-clock mr-1"></i>{{ msg.timestamp|date:"M d, H:i" }}
+                  {% if msg.read %}
+                    <i class="fas fa-check-double text-blue-500 ml-1"></i>
+                  {% else %}
+                    <i class="fas fa-check text-gray-400 ml-1"></i>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          {% elif sender_type == 'seller' and msg.sender_seller and msg.sender_seller.id == sender_id %}
+            <!-- Sent message (seller) -->
+            <div class="flex justify-end mb-3 message-enter">
+              <div class="max-w-xs md:max-w-md">
+                <div class="bg-green-100 text-gray-800 px-4 py-2 rounded-t-2xl rounded-l-2xl shadow-sm">
+                  {{ msg.content }}
+                </div>
+                <div class="text-right text-xs text-gray-500 mt-1 pr-1">
+                  <i class="far fa-clock mr-1"></i>{{ msg.timestamp|date:"M d, H:i" }}
+                  {% if msg.read %}
+                    <i class="fas fa-check-double text-green-500 ml-1"></i>
+                  {% else %}
+                    <i class="fas fa-check text-gray-400 ml-1"></i>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          {% else %}
+            <!-- Received message -->
+            <div class="flex justify-start mb-3 message-enter">
+              <div class="max-w-xs md:max-w-md">
+                <div class="bg-gray-200 text-gray-800 px-4 py-2 rounded-t-2xl rounded-r-2xl shadow-sm">
+                  {{ msg.content }}
+                </div>
+                <div class="text-left text-xs text-gray-500 mt-1 pl-1">
+                  <i class="far fa-clock mr-1"></i>{{ msg.timestamp|date:"M d, H:i" }}
+                </div>
+              </div>
+            </div>
+          {% endif %}
+        {% endfor %}
+      {% endif %}
+    </div>
+
+    <!-- Message Input -->
+    <form method="post" class="border-t border-gray-200 p-4 bg-white">
+      {% csrf_token %}
+      <input type="hidden" name="sender_type" value="{{ sender_type }}">
+      <input type="hidden" name="sender_id" value="{{ sender_id }}">
+      <div class="flex items-center space-x-2">
+        <input 
+          type="text" 
+          name="content" 
+          required 
+          placeholder="Type your message here..." 
+          class="flex-1 px-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          autocomplete="off"
+        />
+        <button 
+          type="submit" 
+          class="bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-full w-10 h-10 flex items-center justify-center transition-colors"
+        >
+          <i class="fas fa-paper-plane"></i>
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    // Auto-scroll to bottom of chat
+    const chatContainer = document.querySelector('.chat-container');
+    if (chatContainer) {
+      chatContainer.scrollTop = chatContainer.scrollHeight;
+    }
+
+    // Focus input field on load
+    document.querySelector('input[name="content"]').focus();
+  </script>
+</body>
+</html>

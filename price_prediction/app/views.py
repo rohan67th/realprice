@@ -6,7 +6,7 @@ from django.core.mail import EmailMessage
 from django.urls import reverse
 from django.conf import settings
 from django.utils import timezone
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseBadRequest, HttpResponseRedirect
 
 
 
@@ -31,22 +31,47 @@ def admin_logout(request):
     logout(request)
     return redirect("/")
 
+from django.core.mail import send_mail
 
 def approve_seller(request, seller_id):
     seller = get_object_or_404(CustomUser, id=seller_id)
     seller.is_approved = True
     seller.save()
+
+    send_mail(
+        subject='Your Seller Account Has Been Approved',
+        message='Hi {},\n\nYour seller account has been approved! You can now log in and start using the platform.'.format(seller.username),
+        from_email=settings.EMAIL_HOST_USER,
+        recipient_list=[seller.email],
+        fail_silently=False,
+    )
+
+    messages.success(request, f"{seller.email} has been approved and notified.")
     return redirect('dashboard')
 
 def decline_seller(request, seller_id):
     seller = get_object_or_404(CustomUser, id=seller_id)
+
+    send_mail(
+        subject='Your Seller Account Has Been Declined',
+        message='Hi {},\n\nWe’re sorry, but your seller account request has been declined.'.format(seller.username),
+        from_email=settings.EMAIL_HOST_USER,
+        recipient_list=[seller.email],
+        fail_silently=False,
+    )
+
     seller.delete()
+    messages.warning(request, f"{seller.email} has been declined and notified.")
     return redirect('dashboard')
 
 
 def seller_list(request):
     users = CustomUser.objects.filter(is_approved=True, is_superuser=False)
     return render(request, 'seller_list.html', {'users': users})
+
+def buyer_list(request):
+    buyers = Buyer.objects.all()
+    return render(request, 'buyer_list.html', {'buyers': buyers})
 
 
 def toggle_block_user(request, user_id):
@@ -76,7 +101,52 @@ def admin_property_list(request):
     return render(request,'admin_property_list.html',{'properties': properties})
 
 
+from buyer.models import Complaint
+
+def complaints_admin_view(request):
+    complaints = Complaint.objects.select_related('property', 'buyer').order_by('-created_at')
+    context = {
+        'complaints': complaints
+    }
+    return render(request, 'admin_complaints_list.html', context)
+
+
+def delete_property(request, property_id):
+    property_obj = get_object_or_404(Property, id=property_id)
+
+    if request.method == "POST":
+        property_obj.delete()
+        messages.success(request, "Property deleted successfully.")
+        return redirect('admin_property_list') 
+
+    messages.error(request, "Invalid request method.")
+    return redirect('admin_property_list')
+
+
+def delete_buyer(request, buyer_id):
+    if request.method == 'POST':
+        buyer = get_object_or_404(Buyer, id=buyer_id)
+        buyer.delete()
+        messages.success(request, "Buyer deleted successfully.")
+    return redirect('buyer_list')
+
+
+
 #Seller
+import re
+
+MAX_FILE_SIZE_MB = 2  # Max 2MB
+MAX_FILE_SIZE = MAX_FILE_SIZE_MB * 1024 * 1024
+
+
+def is_strong_password(password):
+    # At least 6 characters, one letter, one digit, one special character
+    return (
+        len(password) >= 6 and
+        re.search(r"[A-Za-z]", password) and
+        re.search(r"\d", password) and
+        re.search(r"[!@#$%^&*(),.?\":{}|<>]", password)
+    )
 
 def seller_register(request):
     if request.method == 'POST':
@@ -90,8 +160,25 @@ def seller_register(request):
         profile_pic = request.FILES.get('profile_pic')
         proof_of_identity = request.FILES.get('proof_of_identity')
 
+        if not re.search(r'[A-Za-z]', username):
+            messages.error(request, "Username should contain only letters.")
+            return redirect('register')
+        
+        if not re.fullmatch(r'^[0-9]{10}$', phone):
+            messages.error(request, "Enter a valid 10-digit phone number.")
+            return redirect('register')
+        
+        if proof_of_identity and proof_of_identity.size > MAX_FILE_SIZE:
+            messages.error(request, f"File size exceeds limit of {MAX_FILE_SIZE_MB}MB.")
+            return redirect('register')
+        
+
         if password != confirm_password:
             messages.error(request, "Passwords do not match.")
+            return redirect('register')
+        
+        if not is_strong_password(password):
+            messages.error(request, "Password must be at least 6 characters with letters, numbers, and a special character.")
             return redirect('register')
 
         if CustomUser.objects.filter(username=username).exists():
@@ -142,9 +229,19 @@ def logout_view(request):
     return redirect('login')
 
 
-def seller_profile(request,user_id):
+def seller_profile(request, user_id):
     user = get_object_or_404(CustomUser, id=user_id)
-    return render(request, 'seller_profile.html', {'user': user})
+    
+    
+    visit = VisitSchedule.objects.filter(
+        property__seller=user,
+        status='approved'
+    ).first()
+
+    return render(request, 'seller_profile.html', {
+        'user': user,
+        'visit': visit,
+    })
 
 def seller_property_list(request):
     properties = Property.objects.filter(is_approved=True)
@@ -158,6 +255,7 @@ def seller_edit_property(request, id):
         property.location = request.POST.get('location')
         property.property_type = request.POST.get('property_type')
         property.price = request.POST.get('price')
+        property.status = request.POST.get('status')
         property.save()
         messages.success(request, 'Property updated successfully.')
         return redirect('seller_property_list')
@@ -183,43 +281,66 @@ def add_property(request):
         property_type = request.POST.get('property_type')
         address = request.POST.get('address')
         location = request.POST.get('location')
+        latitude = request.POST.get('latitude') or None
+        longitude = request.POST.get('longitude') or None
+        area_sqft = request.POST.get('area_sqft') or None
+        bedrooms = request.POST.get('bedrooms') or None
+        bathrooms = request.POST.get('bathrooms') or None
         features = request.POST.get('features', '')
         description = request.POST.get('description', '')
-        photos = request.FILES.get('photos')
+        status = request.POST.get('status', 'Available')
         price = request.POST.get('price')
 
-        # Optional: Convert price to decimal (with validation)
+        # Fetch all image fields from request.FILES
+        main_image = request.FILES.get('main_image')
+        image_1 = request.FILES.get('image_1')
+        image_2 = request.FILES.get('image_2')
+        image_3 = request.FILES.get('image_3')
+
         from decimal import Decimal, InvalidOperation
         try:
             price_decimal = Decimal(price)
         except (InvalidOperation, TypeError):
             price_decimal = None
 
-        # Create Property only if price is valid
         if price_decimal is not None:
-            Property.objects.create(
+            property = Property.objects.create(
                 property_type=property_type,
                 address=address,
                 location=location,
+                latitude=latitude,
+                longitude=longitude,
+                area_sqft=area_sqft,
+                bedrooms=bedrooms,
+                bathrooms=bathrooms,
                 features=features,
                 description=description,
-                photos=photos,
                 price=price_decimal,
+                status=status,
                 seller=request.user,
+                main_image=main_image,
+                image_1=image_1,
+                image_2=image_2,
+                image_3=image_3,
                 is_approved=False
             )
-            messages.info(request, 'Your property has been submitted and is waiting for admin approval.')
-            return redirect('property_list')
+            messages.success(request, 'Property added and pending admin approval.')
+            return redirect('property_list', seller_id=request.user.id)
         else:
-            messages.error(request, 'Please enter a valid price.')
+            messages.error(request, 'Invalid price entered.')
 
     return render(request, 'add_property.html')
 
 
 
-def property_list(request):
-    properties = Property.objects.filter(is_approved=True)
-    return render(request, 'property_list.html', {'properties': properties,'show_approval_message': True})
+
+def property_list(request, seller_id):
+    seller = get_object_or_404(CustomUser, id=seller_id)  # Fetch seller from URL param
+    properties = Property.objects.filter(seller=seller, is_approved=True)  # Filter by seller
+    return render(request, 'property_list.html', {
+        'seller': seller,
+        'properties': properties,
+    })
 
 
 def property_detail(request, pk):
@@ -349,7 +470,8 @@ def edit_profile(request):
 
 
 def landingpage(request):
-    return render(request,'landingpage.html')
+    property = Property.objects.all()
+    return render(request,'landingpage.html',{'properties': property})
 
 
 def about(request):
@@ -359,8 +481,116 @@ def about(request):
 def contact(request):
     return render(request,'contact.html')
 
+from buyer.models import Buyer
+
 
 def dashboard(request):
     pending_sellers = CustomUser.objects.filter(is_approved=False,is_superuser=False)
     pending_properties = Property.objects.filter(is_approved=False)
-    return render(request, "dashboard.html", {"pending_sellers": pending_sellers,'pending_properties': pending_properties,})
+    total_sellers = CustomUser.objects.filter(is_superuser=False).count()
+    total_properties = Property.objects.count()
+    total_buyers = Buyer.objects.filter(is_staff=False).count()
+    return render(request, "dashboard.html", {"pending_sellers": pending_sellers,'pending_properties': pending_properties,'total_sellers': total_sellers, 'total_properties': total_properties,'total_buyers': total_buyers})
+
+
+
+# Scdeduled Visit
+from .models import CustomUser
+from buyer.models import VisitSchedule
+
+
+def visit_requests(request, seller_id):
+    seller = get_object_or_404(CustomUser, id=seller_id)
+    visits = VisitSchedule.objects.filter(property__seller=seller,status='pending')
+
+    print(f"Seller ID: {seller_id}, Visits Count: {visits.count()}")  # Debugging line
+    return render(request, 'visit_requests.html', {'visits': visits, 'seller': seller})
+
+
+def approve_visit(request, visit_id):
+    visit = get_object_or_404(VisitSchedule, id=visit_id)
+    visit.status = 'approved'
+    visit.is_notified = True
+    visit.save()
+    # Redirect to seller visit request page or wherever appropriate
+    return redirect('visit_requests', seller_id=visit.property.seller.id)
+
+
+def decline_visit(request, seller_id, visit_id):
+    seller = get_object_or_404(CustomUser, id=seller_id)
+    visit = get_object_or_404(VisitSchedule, id=visit_id, property__seller=seller)
+
+    visit.status = 'declined'
+    visit.save()
+
+    return redirect('visit_requests', seller_id=seller.id)
+
+
+
+from buyer.models import Message, VisitSchedule
+from django.shortcuts import get_object_or_404, redirect, render
+
+def chat_with_buyer(request, visit_id, sender_type, sender_id):
+    visit = get_object_or_404(VisitSchedule, id=visit_id)
+
+    if visit.status != 'approved':
+        return render(request, 'chat/invalid_sender.html', {'message': 'Visit not approved.'})
+
+    messages = Message.objects.filter(visit=visit).order_by('timestamp')
+
+    if request.method == 'POST':
+        content = request.POST.get('content')
+
+        if not content:
+            return render(request, 'chat.html', {
+                'visit': visit,
+                'messages': messages,
+                'sender_type': sender_type,
+                'sender_id': sender_id,
+                'error': 'Message cannot be empty.'
+            })
+
+        msg_data = {
+            'visit': visit,
+            'content': content
+        }
+
+        if sender_type == 'seller':
+            sender = get_object_or_404(CustomUser, id=sender_id)
+            msg_data['sender_seller'] = sender
+        else:
+            return render(request, 'chat/invalid_sender.html', {'message': 'Invalid sender.'})
+
+        Message.objects.create(**msg_data)
+        return redirect('seller_chat', visit_id=visit.id, sender_type='seller', sender_id=sender_id)
+
+    return render(request, 'seller_chat.html', {
+        'visit': visit,
+        'messages': messages,
+        'sender_type': 'seller',
+        'sender_id': sender_id,
+    })
+
+from buyer.models import RentRequest
+
+
+def pending_rent_requests(request, seller_id):
+    seller = get_object_or_404(CustomUser, id=seller_id)
+    properties = Property.objects.filter(seller=seller)
+    rent_requests = RentRequest.objects.filter(property__in=properties, status='pending')
+
+    return render(request, 'seller_rent_request.html', {
+        'rent_requests': rent_requests,
+        'seller': seller
+    })
+def approve_rent_request(request, request_id):
+    rent_request = get_object_or_404(RentRequest, id=request_id)
+    rent_request.status = 'approved'
+    rent_request.save()
+    return redirect('seller_rent_requests', seller_id=rent_request.property.seller.id)
+
+def decline_rent_request(request, request_id):
+    rent_request = get_object_or_404(RentRequest, id=request_id)
+    rent_request.status = 'rejected'
+    rent_request.save()
+    return redirect('seller_rent_requests', seller_id=rent_request.property.seller.id)

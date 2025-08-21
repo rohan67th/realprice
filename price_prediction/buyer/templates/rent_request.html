@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Rent Request Form | Premium Rental Service</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: {
+                500: "#3B82F6",
+                600: "#2563EB",
+              },
+              secondary: {
+                500: "#10B981",
+                600: "#059669",
+              },
+            },
+            animation: {
+              "pulse-slow": "pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite",
+            },
+          },
+        },
+      };
+    </script>
+  </head>
+  <body
+    class="bg-cover bg-center min-h-screen p-4 flex items-center justify-center"
+    style="
+      background-image: url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1600&q=80');
+      background-color: rgba(0, 0, 0, 0.5);
+      background-blend-mode: overlay;
+    "
+  >
+    <div
+      class="bg-white p-8 rounded-xl shadow-xl w-full max-w-lg border border-gray-100"
+    >
+      <div class="text-center mb-8">
+        <div
+          class="w-16 h-16 bg-primary-500 rounded-full flex items-center justify-center mx-auto mb-4 shadow-md"
+        >
+          <i class="fas fa-key text-white text-2xl"></i>
+        </div>
+        <h2 class="text-3xl font-bold text-gray-800 mb-2">Rent Request Form</h2>
+        <p class="text-gray-600">
+          Fill out this form to request your rental. We'll get back to you
+          within 24 hours.
+        </p>
+      </div>
+
+      <form id="rentRequestForm" action="#" method="POST" class="space-y-5">
+        {% csrf_token %}
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <div class="space-y-1">
+            <label
+              for="startDate"
+              class="block text-gray-700 text-sm font-semibold mb-1"
+            >
+              Start Date <span class="text-red-500">*</span>
+            </label>
+            <input
+              type="date"
+              id="startDate"
+              name="start_date"
+              required
+              class="w-full px-4 py-2.5 border rounded-md focus:ring-primary-500 focus:border-primary-500"
+            />
+            <div
+              id="startDateError"
+              class="text-red-500 text-xs mt-1 hidden"
+            ></div>
+          </div>
+
+          <div class="space-y-1">
+            <label
+              for="endDate"
+              class="block text-gray-700 text-sm font-semibold mb-1"
+            >
+              End Date <span class="text-red-500">*</span>
+            </label>
+            <input
+              type="date"
+              id="endDate"
+              name="end_date"
+              required
+              class="w-full px-4 py-2.5 border rounded-md focus:ring-primary-500 focus:border-primary-500"
+            />
+            <div
+              id="endDateError"
+              class="text-red-500 text-xs mt-1 hidden"
+            ></div>
+          </div>
+        </div>
+
+        <div class="pt-4">
+          <button
+            type="submit"
+            class="w-full bg-primary-500 hover:bg-primary-600 text-white font-medium py-3 px-4 rounded-md transition duration-200"
+          >
+            Submit Rental Request
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const form = document.getElementById("rentRequestForm");
+        const startDateInput = document.getElementById("startDate");
+        const endDateInput = document.getElementById("endDate");
+        const startDateError = document.getElementById("startDateError");
+        const endDateError = document.getElementById("endDateError");
+        const submitButton = document.getElementById("submitButton");
+        const buttonText = document.getElementById("buttonText");
+        const buttonIcon = document.getElementById("buttonIcon");
+
+        // Set minimum date for start date to today
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, "0");
+        const day = String(today.getDate()).padStart(2, "0");
+        const minDate = `${year}-${month}-${day}`;
+        startDateInput.setAttribute("min", minDate);
+        endDateInput.setAttribute("min", minDate);
+
+        // Format today's date for display placeholder
+        const formattedToday = today.toLocaleDateString("en-US", {
+          weekday: "long",
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        });
+
+        // Add input event listeners for real-time validation
+        startDateInput.addEventListener("input", validateDates);
+        endDateInput.addEventListener("input", validateDates);
+
+        // Add focus styles for better UX
+        document.querySelectorAll("input, textarea, select").forEach((el) => {
+          el.addEventListener("focus", function () {
+            this.parentElement.classList.add(
+              "ring-2",
+              "ring-primary-500",
+              "ring-opacity-50"
+            );
+            this.parentElement.classList.remove("border-gray-300");
+          });
+          el.addEventListener("blur", function () {
+            this.parentElement.classList.remove(
+              "ring-2",
+              "ring-primary-500",
+              "ring-opacity-50"
+            );
+            this.parentElement.classList.add("border-gray-300");
+          });
+        });
+
+        function validateDates() {
+          const startDateValue = startDateInput.value;
+          const endDateValue = endDateInput.value;
+
+          // Clear previous errors
+          startDateError.classList.add("hidden");
+          endDateError.classList.add("hidden");
+          startDateError.textContent = "";
+          endDateError.textContent = "";
+
+          let isValid = true;
+
+          // Validate Start Date is not in the past
+          if (startDateValue) {
+            const selectedStartDate = new Date(startDateValue);
+            selectedStartDate.setHours(0, 0, 0, 0);
+            if (selectedStartDate < today) {
+              startDateError.textContent =
+                "Start date cannot be in the past. Please select today or later.";
+              startDateError.classList.remove("hidden");
+              isValid = false;
+            }
+          }
+
+          // Validate End Date is not before Start Date
+          if (startDateValue && endDateValue) {
+            const selectedStartDate = new Date(startDateValue);
+            const selectedEndDate = new Date(endDateValue);
+            selectedStartDate.setHours(0, 0, 0, 0);
+            selectedEndDate.setHours(0, 0, 0, 0);
+
+            if (selectedEndDate < selectedStartDate) {
+              endDateError.textContent =
+                "End date must be on or after the start date.";
+              endDateError.classList.remove("hidden");
+              isValid = false;
+            } else if (
+              selectedEndDate.getTime() === selectedStartDate.getTime()
+            ) {
+              endDateError.textContent =
+                "For same-day rentals, please contact us directly.";
+              endDateError.classList.remove("hidden");
+              isValid = false;
+            }
+          }
+
+          // If a start date is selected, set min for end date input
+          if (startDateValue) {
+            endDateInput.setAttribute("min", startDateValue);
+          } else {
+            endDateInput.setAttribute("min", minDate);
+          }
+
+          return isValid;
+        }
+
+        form.addEventListener("submit", function (event) {
+          if (!validateDates()) {
+            event.preventDefault();
+            return;
+          }
+
+          // Show loading state
+          buttonText.textContent = "Processing...";
+          buttonIcon.classList.remove("fa-paper-plane");
+          buttonIcon.classList.add("fa-spinner", "fa-spin");
+          submitButton.disabled = true;
+          submitButton.classList.remove("hover:bg-primary-600");
+          submitButton.classList.add("cursor-not-allowed", "opacity-75");
+
+          // In a real application, you would have an AJAX call here
+          // setTimeout(() => {
+          //     // Reset button state after submission
+          //     buttonText.textContent = 'Request Submitted!';
+          //     buttonIcon.classList.remove('fa-spinner', 'fa-spin');
+          //     buttonIcon.classList.add('fa-check');
+          //     submitButton.classList.remove('bg-primary-500');
+          //     submitButton.classList.add('bg-secondary-500', 'hover:bg-secondary-600');
+          // }, 1500);
+        });
+
+        // Reset form button state if validation fails after "submission"
+        form.addEventListener("input", function () {
+          if (submitButton.disabled) {
+            buttonText.textContent = "Submit Rental Request";
+            buttonIcon.classList.remove("fa-spinner", "fa-spin", "fa-check");
+            buttonIcon.classList.add("fa-paper-plane");
+            submitButton.disabled = false;
+            submitButton.classList.remove(
+              "cursor-not-allowed",
+              "opacity-75",
+              "bg-secondary-500",
+              "hover:bg-secondary-600"
+            );
+            submitButton.classList.add(
+              "hover:bg-primary-600",
+              "bg-primary-500"
+            );
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

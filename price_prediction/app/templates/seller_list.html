@@ -1,50 +1,95 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Users List</title>
-    <!-- ✅ Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-  </head>
-  <body class="bg-gray-100 p-8">
-    <h2 class="text-2xl font-bold mb-4">Users List</h2>
+{% extends 'admin_base.html' %}
+{% block title %}Seller Management{% endblock %}
 
-    <table class="min-w-full bg-white border border-gray-300 rounded shadow">
-      <thead>
-        <tr class="bg-gray-200 text-left">
-          <th class="py-2 px-4 border-b">Username</th>
-          <th class="py-2 px-4 border-b">Email</th>
-          <th class="py-2 px-4 border-b">Status</th>
-          <th class="py-2 px-4 border-b">Action</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for user in users %}
-        <tr class="hover:bg-gray-50">
-          <td class="py-2 px-4 border-b">{{ user.username }}</td>
-          <td class="py-2 px-4 border-b">{{ user.email }}</td>
-          <td class="py-2 px-4 border-b">
-            {% if user.is_blocked %}
-            <span class="text-red-600 font-semibold">Blocked</span>
-            {% else %}
-            <span class="text-green-600 font-semibold">Active</span>
-            {% endif %}
-          </td>
-          <td class="py-2 px-4 border-b">
-            <form method="post" action="{% url 'toggle_block_user' user.id %}">
-              {% csrf_token %}
-              <button
-                type="submit"
-                class="{% if user.is_blocked %}bg-red-500 bg-red-600{% else %}bg-blue-500 bg-blue-600{% endif %} text-white px-3 py-1 rounded"
-              >
-                {% if user.is_blocked %}Unblock{% else %}Block{% endif %}
-              </button>
-            </form>
-          </td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  </body>
-</html>
+
+{% block content %}
+<div class="max-w-6xl mx-auto px-4 py-6">
+  <div class="flex justify-between items-center mb-6">
+    <div>
+      <h1 class="text-2xl md:text-3xl font-bold text-gray-800">Seller Management</h1>
+      <p class="text-gray-600">Manage and control all seller accounts</p>
+    </div>
+    
+  </div>
+
+  <div class="bg-white rounded-xl shadow-md overflow-hidden">
+    <div class="overflow-x-auto">
+      <table class="min-w-full divide-y divide-gray-200">
+        <thead class="bg-gray-100">
+          <tr>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase">Profile</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase">Seller ID</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase">Username</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase">Email</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase">Gender</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase">Address</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase">Proof</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase">Status</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase">Actions</th>
+          </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-200">
+          {% for user in users %}
+          <tr class="hover:bg-gray-50 transition duration-150">
+            <td class="px-6 py-4 whitespace-nowrap">
+              {% if user.profile_pic %}
+              <img src="{{ user.profile_pic.url }}" alt="Profile Pic" class="h-10 w-10 rounded-full object-cover">
+              {% else %}
+              <div class="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center">
+                <i class="fas fa-user text-gray-500"></i>
+              </div>
+              {% endif %}
+            </td>
+            <td class="px-6 py-4 text-sm text-gray-900">{{ user.id }}</td>
+            <td class="px-6 py-4"><div class="text-sm font-medium text-gray-900">{{ user.username }}</div></td>
+            <td class="px-6 py-4 text-sm text-gray-900">
+              {{ user.email }}
+              {% if user.is_superuser %}
+              <span class="ml-2 px-2 inline-flex text-xs font-semibold bg-purple-100 text-purple-800 rounded-full">Admin</span>
+              {% endif %}
+            </td>
+            <td class="px-6 py-4 text-sm text-gray-700">{{ user.gender|default:"N/A" }}</td>
+            <td class="px-6 py-4 text-sm text-gray-700">{{ user.address|default:"-" }}</td>
+            <td class="px-6 py-4 text-sm text-blue-600 underline">
+              {% if user.proof_of_identity %}
+              <a href="{{ user.proof_of_identity.url }}" target="_blank">View Proof</a>
+              {% else %}
+              <span class="text-gray-400">Not uploaded</span>
+              {% endif %}
+            </td>
+            <td class="px-6 py-4">
+              {% if user.is_blocked %}
+              <span class="px-2 inline-flex text-xs font-semibold bg-red-100 text-red-800 rounded-full">
+                <i class="fas fa-ban mr-1"></i> Blocked
+              </span>
+              {% else %}
+              <span class="px-2 inline-flex text-xs font-semibold bg-green-100 text-green-800 rounded-full">
+                <i class="fas fa-check-circle mr-1"></i> Active
+              </span>
+              {% endif %}
+            </td>
+            <td class="px-6 py-4 text-sm font-medium">
+              <form method="post" action="{% url 'toggle_block_user' user.id %}">
+                {% csrf_token %}
+                <button type="submit"
+                  class="{% if user.is_blocked %}bg-green-600 hover:bg-green-700{% else %}bg-red-600 hover:bg-red-700{% endif %} text-white px-4 py-2 rounded-md transition duration-200">
+                  {% if user.is_blocked %}
+                  <i class="fas fa-user-check mr-1"></i> Unblock
+                  {% else %}
+                  <i class="fas fa-user-slash mr-1"></i> Block
+                  {% endif %}
+                </button>
+              </form>
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="10" class="px-6 py-4 text-center text-gray-500">No users found</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

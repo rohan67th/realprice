@@ -35,7 +35,12 @@
       <p class="text-sm text-gray-500 mt-1">Login to your account</p>
     </div>
 
-    {% if messages %}
+    
+
+    <form class="space-y-5" method="post" action="{% url 'login' %}">
+      {% csrf_token %}
+
+      {% if messages %}
     <div>
       {% for message in messages %}
       <div
@@ -46,9 +51,6 @@
       {% endfor %}
     </div>
     {% endif %}
-
-    <form class="space-y-5" method="post" action="{% url 'login' %}">
-      {% csrf_token %}
 
       <div class="relative">
         <i

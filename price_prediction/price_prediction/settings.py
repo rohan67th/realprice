@@ -9,6 +9,13 @@ https://docs.djangoproject.com/en/5.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
+from decouple import config
+
+OPENAI_API_KEY = config('OPENAI_API_KEY', default=None)
+GEMINI_API_KEY = config('GEMINI_API_KEY', default=None)
+OPENROUTER_API_KEY = config('OPENROUTER_API_KEY', default=None)
+
+
 
 from pathlib import Path
 
@@ -31,6 +38,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'channels',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -39,6 +47,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'app',
     'buyer',
+    'chatbot',
 ]
 
 MIDDLEWARE = [
@@ -139,3 +148,29 @@ EMAIL_PORT=465
 EMAIL_USE_SSL=True
 EMAIL_HOST_USER="aravindrodiz700@gmail.com"
 EMAIL_HOST_PASSWORD="bble jcei zvcr txhm"
+# your_project/settings.py
+import os
+from dotenv import load_dotenv
+
+load_dotenv() # This line loads the .env file
+
+# ... rest of settings.py
+
+# Add this line somewhere after BASE_DIR
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+# price_prediction/settings.py
+
+# ... other settings ...
+
+STATIC_URL = 'static/'
+
+# ADD THIS! This tells Django to look for a 'static' folder inside your chatbot app.
+# Make sure BASE_DIR is defined above this.
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'chatbot/static'),
+]
+
+
+
+
+OPENAI_API_KEY = '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'
